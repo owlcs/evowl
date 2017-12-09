@@ -109,9 +109,8 @@ public class MetricsServer {
 
 	private OWLBadge parseBadge(JSONObject jsonmain) {
 		String metric = jsonmain.get("metric").toString();
-		String value = jsonmain.get("value").toString();
 		String badge = jsonmain.get("badge").toString();
-		OWLBadge b = new OWLBadgeImpl(metric, value, badge);
+		OWLBadge b = new OWLBadgeImpl(metric, badge);
 		return b;
 	}
 

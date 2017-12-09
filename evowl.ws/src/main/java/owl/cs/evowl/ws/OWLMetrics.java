@@ -1,10 +1,10 @@
 package owl.cs.evowl.ws;
 
 import java.io.StringReader;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 
 import org.json.simple.JSONArray;
@@ -18,44 +18,24 @@ import com.sun.jersey.api.client.WebResource;
 import owl.cs.analysis.utilities.WSConfig;
 import owl.cs.analysis.utilities.WebServiceBindings;
 import owl.cs.evowl.util.EvOWLMetrics;
+import owl.cs.evowl.util.OWLBadge;
+import owl.cs.evowl.util.OWLBadgeImpl;
 
 public class OWLMetrics {
 
 	String url;
-	/*
-	 * boolean broken_link = false; boolean oa3 = false; boolean oa4 = false;
-	 * boolean oa5 = false; boolean owl2 = false; boolean owl2dl = false; boolean
-	 * owl2el = false; boolean owl2ql = false; boolean owl2rl = false; boolean rdfs
-	 * = false; boolean nonempty = false;
-	 */
-	Map<String, String> data = new HashMap<>();
-	Map<String,Map<String,String>> badges = new HashMap<>();
+	Set<String> metrics = new HashSet<>();
+	List<OWLBadge> data = new ArrayList<>();
+	OWLBadge mainbadge = new OWLBadgeImpl(EvOWLMetrics.MAIN_UNEVALUATED,
+			EvOWLMetrics.badges.get(EvOWLMetrics.MAIN_UNEVALUATED));
 
 	public OWLMetrics(WSConfig conf, String oid) {
 		url = oid;
-		
-		Map<String,String> nonempty = new HashMap<>();
-		nonempty.put("true", "https://images.nature.com/lw300/nature-assets/bdjteam/2015/bdjteam201575/images_hires/bdjteam201575-i1.jpg");
-		nonempty.put("false", "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Feedbin-Icon-check.svg/120px-Feedbin-Icon-check.svg.png");
-		
-		badges.put(EvOWLMetrics.URL_HEALTHY,nonempty);
-		badges.put(EvOWLMetrics.NONEMPTY,nonempty);
-		badges.put(EvOWLMetrics.OA3,nonempty);
-		badges.put(EvOWLMetrics.OA4,nonempty);
-		badges.put(EvOWLMetrics.OA5,nonempty);
-		badges.put(EvOWLMetrics.OWL2,nonempty);
-		badges.put(EvOWLMetrics.OWL2DL,nonempty);
-		badges.put(EvOWLMetrics.OWL2EL,nonempty);
-		badges.put(EvOWLMetrics.OWL2QL,nonempty);
-		badges.put(EvOWLMetrics.OWL2RL,nonempty);
-		badges.put(EvOWLMetrics.RDFS,nonempty);
-	
-		
+
 		try {
 			Client client = Client.create();
 
 			String q = conf.getBaseAdress(WebServiceBindings.GETMEASUREMENTS) + "?url=" + oid;
-
 			System.out.println(q);
 
 			WebResource webResource = client.resource(q);
@@ -75,38 +55,23 @@ public class OWLMetrics {
 
 			JSONArray meas = (JSONArray) jsonroot.get("measurements");
 
-			for (Iterator iterator = meas.iterator(); iterator.hasNext();) {
-				
+			for (Iterator<Object> iterator = meas.iterator(); iterator.hasNext();) {
+
 				JSONObject measure = (JSONObject) iterator.next();
 				String metric = measure.get("metric").toString().replaceAll("\\\\", "");
-				if(badges.keySet().contains(metric)) {
-					data.put(metric, measure.get("value").toString());
+				System.out.println("LOOP METRICS #####################");
+
+				if (EvOWLMetrics.badges.keySet().contains(metric)) {
+					String val = measure.get("value").toString();
+					System.out.println(val);
+					if (val.equals("true")) {
+						data.add(new OWLBadgeImpl(metric, EvOWLMetrics.badges.get(metric)));
+						metrics.add(metric);
+					}
 				}
-				/*
-				 * if (metric.equals(EvOWLMetrics.NONEMPTY)) { broken_link =
-				 * measure.get("value").toString().equals("true"); } if
-				 * (metric.equals(EvOWLMetrics.OA3)) { oa3 =
-				 * measure.get("value").toString().equals("true"); } if
-				 * (metric.equals(EvOWLMetrics.OA4)) { oa4 =
-				 * measure.get("value").toString().equals("true"); } if
-				 * (metric.equals(EvOWLMetrics.OA5)) { oa5 =
-				 * measure.get("value").toString().equals("true"); } if
-				 * (metric.equals(EvOWLMetrics.OWL2)) { owl2 =
-				 * measure.get("value").toString().equals("true"); } if
-				 * (metric.equals(EvOWLMetrics.OWL2DL)) { owl2dl =
-				 * measure.get("value").toString().equals("true"); } if
-				 * (metric.equals(EvOWLMetrics.OWL2EL)) { owl2el =
-				 * measure.get("value").toString().equals("true"); } if
-				 * (metric.equals(EvOWLMetrics.OWL2QL)) { owl2ql =
-				 * measure.get("value").toString().equals("true"); } if
-				 * (metric.equals(EvOWLMetrics.OWL2RL)) { owl2rl =
-				 * measure.get("value").toString().equals("true"); } if
-				 * (metric.equals(EvOWLMetrics.RDFS)) { rdfs =
-				 * measure.get("value").toString().equals("true"); } if
-				 * (metric.equals(EvOWLMetrics.NONEMPTY)) { nonempty =
-				 * measure.get("value").toString().equals("true"); }
-				 */
 			}
+
+			mainbadge = getMainBadge();
 
 		} catch (Exception e) {
 
@@ -116,19 +81,46 @@ public class OWLMetrics {
 
 	}
 
+	private OWLBadge getMainBadge() {
+		if (metrics.contains(EvOWLMetrics.URL_HEALTHY)) {
+			if (metrics.contains(EvOWLMetrics.OA3) || metrics.contains(EvOWLMetrics.OA4)
+					|| metrics.contains(EvOWLMetrics.OA5)) {
+				if (metrics.contains(EvOWLMetrics.NONEMPTY)) {
+					if (metrics.contains(EvOWLMetrics.OWL2)) {
+						if (metrics.contains(EvOWLMetrics.OWL2DL)) {
+							if (metrics.contains(EvOWLMetrics.CONSISTENT)) {
+								return EvOWLMetrics.getBadge(EvOWLMetrics.MAIN_GOLD);
+							} else {
+								return EvOWLMetrics.getBadge(EvOWLMetrics.MAIN_SILVER);
+							}
+						} else {
+							return EvOWLMetrics.getBadge(EvOWLMetrics.MAIN_BRONZE);
+						}
+					}
+				}
+			}
+		} else {
+			return EvOWLMetrics.getBadge(EvOWLMetrics.MAIN_BROKEN);
+		}
+		return EvOWLMetrics.getBadge(EvOWLMetrics.MAIN_UNEVALUATED);
+	}
+
 	public JSONObject toJSONString() {
 		JSONObject obj = new JSONObject();
 		obj.put("oid", url);
 		JSONArray badgesjson = new JSONArray();
-		for (String metric : data.keySet()) {
+		for (OWLBadge b : data) {
 			JSONObject o = new JSONObject();
-			String value = data.get(metric);
-			o.put("metric", metric);
-			o.put("value", value);
-			o.put("badge", badges.get(metric).get(value));
+			o.put("metric", b.getMetric());
+			o.put("badge", b.getBadgeLocation());
 			badgesjson.add(o);
 		}
 		obj.put("badges", badgesjson);
+
+		JSONObject mainbadge = new JSONObject();
+		mainbadge.put("metric", this.mainbadge.getMetric());
+		mainbadge.put("badge", this.mainbadge.getBadgeLocation());
+		obj.put("mainbadge", mainbadge);
 		return obj;
 	}
 

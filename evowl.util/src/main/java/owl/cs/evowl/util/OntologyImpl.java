@@ -9,7 +9,7 @@ import java.util.Set;
 public class OntologyImpl implements Ontology {
 
 	private final String url;
-	OWLBadge mainbadge = new OWLBadgeImpl("evowl", "true","https://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-nc-nd.png");
+	OWLBadge mainbadge = EvOWLMetrics.getBadge("default");
 	private Set<OWLBadge> badges = new HashSet<>();
 	private Map<String, String> metrics = new HashMap<>();
 	private boolean urlhealthy = false;
