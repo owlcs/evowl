@@ -23,6 +23,7 @@ import org.eclipse.rdf4j.sail.inferencer.fc.ForwardChainingRDFSInferencer;
 import org.eclipse.rdf4j.sail.memory.MemoryStore;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 import owl.cs.analysis.utilities.OntologyBinding;
 
@@ -30,6 +31,7 @@ public class KB {
 
 	private static KB instance = null;
 	Repository db = null;
+	int TRUNCATESTRING = 300;
 
 	protected KB() {
 		File dataDir = new File("triplestore");
@@ -114,7 +116,7 @@ public class KB {
 			Value datei = bs.getValue("date");
 			measure.put("measureid", measurei.stringValue());
 			measure.put("metric", metrici.stringValue());
-			measure.put("value", valuei.stringValue());
+			measure.put("value", jsonpreprocess(valuei.stringValue()));
 			measure.put("instrument", instrumenti.stringValue());
 			measure.put("recordingdate", datei.stringValue());
 			measures.add(measure);
@@ -154,11 +156,16 @@ public class KB {
 			Value z = bs.getValue("z");
 			trip.put("subject", x.stringValue());
 			trip.put("relation", y.stringValue());
-			trip.put("object", z.stringValue());
+			trip.put("object", jsonpreprocess(z.stringValue()));
 			arr.add(trip);
 		}
 		obj.put("oids", arr);
 		return obj;
+	}
+
+	private String jsonpreprocess(String stringValue) {
+		String s = stringValue.length()<=TRUNCATESTRING? stringValue : stringValue.substring(0, TRUNCATESTRING)+" [...]";
+		return JSONValue.escape(s);
 	}
 
 }

@@ -42,7 +42,7 @@ public class AllOntologiesView extends VerticalLayout {
 	private String mainBadgeHTML(Ontology o) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<a href=\"www.google.de\"><img src=" + o.getEvowlMainBadge().getBadgeLocation() + " alt=\""
-				+ o.getEvowlMainBadge().getMetric() + "\" height=\"42\" width=\"142\" /></a>");
+				+ o.getEvowlMainBadge().getMetric() + "\" width=\"100px\" /></a>");
 		return sb.toString();
 	}
 
@@ -50,7 +50,7 @@ public class AllOntologiesView extends VerticalLayout {
 		StringBuilder sb = new StringBuilder();
 		for (OWLBadge b : o.getBadges()) {
 			sb.append("<a href=\"www.google.de\"><img src=" + b.getBadgeLocation() + " alt=\"" + b.getMetric()
-					+ "\" height=\"42\" width=\"42\" /></a>");
+					+ "\" height=\"30\" width=\"30\" /></a>");
 		}
 		return sb.toString();
 	}

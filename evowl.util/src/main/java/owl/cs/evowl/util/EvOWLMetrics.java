@@ -25,6 +25,7 @@ public class EvOWLMetrics {
 
 	public final static String MAIN_BROKEN = OntologyBinding.entityIRI("evowl_main_broken");
 	public final static String MAIN_BRONZE = OntologyBinding.entityIRI("evowl_main_bronze");
+	public final static String MAIN_GREY = OntologyBinding.entityIRI("evowl_main_grey");
 	public final static String MAIN_UNEVALUATED = OntologyBinding.entityIRI("evowl_main_bronze");
 	public final static String MAIN_SILVER = OntologyBinding.entityIRI("evowl_main_silver");
 	public final static String MAIN_GOLD = OntologyBinding.entityIRI("evowl_main_gold");
@@ -37,6 +38,7 @@ public class EvOWLMetrics {
 		aMap.put(EvOWLMetrics.MAIN_SILVER, "https://purl.org/evowl/silver");
 		aMap.put(EvOWLMetrics.MAIN_BRONZE, "https://purl.org/evowl/bronze");
 		aMap.put(EvOWLMetrics.MAIN_UNEVALUATED, "https://purl.org/evowl/unevaluated");
+		aMap.put(EvOWLMetrics.MAIN_GREY, "https://purl.org/evowl/grey");
 
 		aMap.put(EvOWLMetrics.URL_HEALTHY, "https://purl.org/evowl/urlhealthy");
 		aMap.put(EvOWLMetrics.NONEMPTY, "https://purl.org/evowl/nonempty");

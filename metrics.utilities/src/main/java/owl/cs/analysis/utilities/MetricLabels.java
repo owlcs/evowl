@@ -247,7 +247,7 @@ public class MetricLabels {
 	public static final String OA3_PARSEABLE = "owlapi_3_parseable";
 	public static final String OA4_PARSEABLE = "owlapi_4_parseable";
 	public static final String OA5_PARSEABLE = "owlapi_5_parseable";
-	public static final String NONEMPTY = "owlapi_3_nonempty";
+	public static final String NONEMPTY = "nonempty";
 	public static final String OA3_LOAD_EXCEPTION_MESSAGE = "owlapi_3_load_exception_message";
 	public static final String OA4_LOAD_EXCEPTION_MESSAGE = "owlapi_4_load_exception_message";
 	public static final String OA5_LOAD_EXCEPTION_MESSAGE = "owlapi_5_load_exception_message";

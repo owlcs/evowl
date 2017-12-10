@@ -28,8 +28,8 @@ public class OWLMetrics {
 	List<OWLBadge> data = new ArrayList<>();
 	OWLBadge mainbadge = new OWLBadgeImpl(EvOWLMetrics.MAIN_UNEVALUATED,
 			EvOWLMetrics.badges.get(EvOWLMetrics.MAIN_UNEVALUATED));
-	private String OAHARVEST = "metrics.harvest.oa3-0.0.1-jar-with-dependencies.jar"; 
-	private String REASONERHARVEST = "metrics.harvest.hermit-0.0.1-jar-with-dependencies.jar"; 
+	private String OAHARVEST = "metrics.harvest.oa3-0.0.1-jar-with-dependencies.jar";
+	private String REASONERHARVEST = "metrics.harvest.hermit-0.0.1-jar-with-dependencies.jar";
 
 	public OWLMetrics(WSConfig conf, String oid) {
 		url = oid;
@@ -67,7 +67,7 @@ public class OWLMetrics {
 					String val = measure.get("value").toString();
 					String instrument = measure.get("instrument").toString();
 					System.out.println(val);
-					if (val.equals("true")&&evowlMetric(metric,instrument)) {
+					if (val.equals("true") && evowlMetric(metric, instrument)) {
 						data.add(new OWLBadgeImpl(metric, EvOWLMetrics.badges.get(metric)));
 						metrics.add(metric);
 					}
@@ -85,31 +85,29 @@ public class OWLMetrics {
 	}
 
 	private boolean evowlMetric(String metric, String instrument) {
-		return instrument.equals(OAHARVEST)||instrument.equals(REASONERHARVEST)||EvOWLMetrics.generalMetrics.contains(metric);
+		return instrument.equals(OAHARVEST) || instrument.equals(REASONERHARVEST)
+				|| EvOWLMetrics.generalMetrics.contains(metric);
 	}
 
 	private OWLBadge getMainBadge() {
-		if (metrics.contains(EvOWLMetrics.URL_HEALTHY)) {
-			if (metrics.contains(EvOWLMetrics.OA3) || metrics.contains(EvOWLMetrics.OA4)
-					|| metrics.contains(EvOWLMetrics.OA5)) {
-				if (metrics.contains(EvOWLMetrics.NONEMPTY)) {
-					if (metrics.contains(EvOWLMetrics.OWL2)) {
-						if (metrics.contains(EvOWLMetrics.OWL2DL)) {
-							if (metrics.contains(EvOWLMetrics.CONSISTENT)) {
-								return EvOWLMetrics.getBadge(EvOWLMetrics.MAIN_GOLD);
-							} else {
-								return EvOWLMetrics.getBadge(EvOWLMetrics.MAIN_SILVER);
-							}
-						} else {
-							return EvOWLMetrics.getBadge(EvOWLMetrics.MAIN_BRONZE);
-						}
+		if (metrics.contains(EvOWLMetrics.URL_HEALTHY) && (metrics.contains(EvOWLMetrics.OA3)
+				|| metrics.contains(EvOWLMetrics.OA4) || metrics.contains(EvOWLMetrics.OA5))) {
+			if (metrics.contains(EvOWLMetrics.NONEMPTY) && metrics.contains(EvOWLMetrics.OWL2)) {
+				if (metrics.contains(EvOWLMetrics.OWL2DL)) {
+					if (metrics.contains(EvOWLMetrics.CONSISTENT)) {
+						return EvOWLMetrics.getBadge(EvOWLMetrics.MAIN_GOLD);
+					} else {
+						return EvOWLMetrics.getBadge(EvOWLMetrics.MAIN_SILVER);
 					}
+				} else {
+					return EvOWLMetrics.getBadge(EvOWLMetrics.MAIN_BRONZE);
 				}
+			} else {
+				return EvOWLMetrics.getBadge(EvOWLMetrics.MAIN_GREY);
 			}
 		} else {
 			return EvOWLMetrics.getBadge(EvOWLMetrics.MAIN_BROKEN);
 		}
-		return EvOWLMetrics.getBadge(EvOWLMetrics.MAIN_UNEVALUATED);
 	}
 
 	public JSONObject toJSONString() {
