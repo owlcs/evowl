@@ -26,8 +26,7 @@ public abstract class OntologyAnalysis implements ExportToRDFXML {
 		if(nonempty) {
 			gatherMetrics();
 		}
-		addResult(MetricLabels.OA3_PARSEABLE, parseable);
-		addResult(MetricLabels.OA3_NONEMPTY, nonempty);
+		addResult(MetricLabels.NONEMPTY, nonempty);
 	}
 	
 	protected abstract void gatherMetrics();

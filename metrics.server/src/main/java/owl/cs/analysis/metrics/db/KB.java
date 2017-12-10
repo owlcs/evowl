@@ -89,9 +89,16 @@ public class KB {
 		obj.put("oid", url);
 		JSONArray measures = new JSONArray();
 
-		String query = "SELECT ?measure ?metric ?value WHERE " + "{ " + "<" + url + "> <"
-				+ OntologyBinding.getHasMeasurementIRI() + "> ?measure . " + "?measure rdf:type ?metric . "
-				+ "?measure <" + OntologyBinding.getHasMeasurementValueIRI() + "> ?value . " + " }";
+		// TODO: add triple pattern: ?metric rdf:type <http:\\metricclass>
+		
+		String query = "SELECT ?measure ?metric ?value ?instrument ?date "
+				+ "WHERE " + "{ " 
+				+ "<" + url + "> <"+ OntologyBinding.getHasMeasurementIRI() + "> ?measure . " 
+				+ "?measure rdf:type ?metric . "
+				+ "?measure <" + OntologyBinding.getHasMeasurementValueIRI() + "> ?value . " 
+				+ "?measure <" + OntologyBinding.getHasMeasurementInstrumentIRI() + "> ?instrument . " 
+				+ "?measure <" + OntologyBinding.getHasRecordingDateIRI() + "> ?date . " 
+				+ " }";
 
 		List<BindingSet> results = new ArrayList<>();
 		results.addAll(Repositories.tupleQuery(db, query, r -> QueryResults.asList(r)));
@@ -103,9 +110,13 @@ public class KB {
 			Value measurei = bs.getValue("measure");
 			Value metrici = bs.getValue("metric");
 			Value valuei = bs.getValue("value");
+			Value instrumenti = bs.getValue("instrument");
+			Value datei = bs.getValue("date");
 			measure.put("measureid", measurei.stringValue());
 			measure.put("metric", metrici.stringValue());
 			measure.put("value", valuei.stringValue());
+			measure.put("instrument", instrumenti.stringValue());
+			measure.put("recordingdate", datei.stringValue());
 			measures.add(measure);
 		}
 		obj.put("measurements", measures);

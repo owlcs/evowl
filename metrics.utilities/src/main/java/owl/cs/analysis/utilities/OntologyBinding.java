@@ -6,6 +6,8 @@ public class OntologyBinding {
 	public static String ONTOLOGYIRI = "http://ontothenextone.net/mowl.owl";
 	public static String HASMEASUREMENT = "hasMeasurement";
 	public static String HASMEASUREMENTVALUE = "hasMeasurementValue";
+	public static String HASMEASUREMENTINSTRUMENT = "hasMeasurementInstrument";
+	public static String HASRECORDINGDATE = "hasRecordingDate";
 	public static String ONTOLOGYDEPLOYLOCATIONCLASS = "OntologyDeployLocation";
 
 	public static String entityIRI(String value) {
@@ -22,6 +24,14 @@ public class OntologyBinding {
 
 	public static String getOntologyDeployLocationClass() {
 		return entityIRI(ONTOLOGYDEPLOYLOCATIONCLASS);
+	}
+
+	public static String getHasMeasurementInstrumentIRI() {
+		return entityIRI(HASMEASUREMENTINSTRUMENT);
+	}
+
+	public static String getHasRecordingDateIRI() {
+		return entityIRI(HASRECORDINGDATE);
 	}
 	
 }

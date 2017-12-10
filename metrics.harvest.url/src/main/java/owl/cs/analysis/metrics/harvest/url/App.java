@@ -2,6 +2,7 @@ package owl.cs.analysis.metrics.harvest.url;
 
 import java.io.File;
 
+import owl.cs.analysis.metrics.utilities.oa5.ExperimentUtilities;
 import owl.cs.analysis.metrics.utilities.oa5.ExportRDF;
 import owl.cs.analysis.utilities.URLAnalysis;
 
@@ -20,7 +21,7 @@ public class App
 		URLAnalysis oa = new URLAnalysis(url, download) {
 
 			public boolean exportRDFXML(File f) {
-				return ExportRDF.exportMeasurements(getSimpleRecord(), getURL(), f);
+				return ExportRDF.exportMeasurements(getSimpleRecord(), getURL(), f,ExperimentUtilities.getJARName(this.getClass()));
 			}
 			
 		};

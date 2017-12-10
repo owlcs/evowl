@@ -247,8 +247,10 @@ public class MetricLabels {
 	public static final String OA3_PARSEABLE = "owlapi_3_parseable";
 	public static final String OA4_PARSEABLE = "owlapi_4_parseable";
 	public static final String OA5_PARSEABLE = "owlapi_5_parseable";
-	public static final String OA3_NONEMPTY = "owlapi_3_nonempty";
+	public static final String NONEMPTY = "owlapi_3_nonempty";
 	public static final String OA3_LOAD_EXCEPTION_MESSAGE = "owlapi_3_load_exception_message";
+	public static final String OA4_LOAD_EXCEPTION_MESSAGE = "owlapi_4_load_exception_message";
+	public static final String OA5_LOAD_EXCEPTION_MESSAGE = "owlapi_5_load_exception_message";
 	public static final String URL_DOWNLOADABLE = "url_downloadable";
 	public static final String EVOWLMAIN = "evowl_main_badge";
 	public static final String EVOWLMAIN_UNASSESSED = "evowl_main_unassessed";
@@ -256,6 +258,7 @@ public class MetricLabels {
 	public static final String EVOWLMAIN_BRONZE = "evowl_main_badge_bronze";
 	public static final String EVOWLMAIN_SILVER = "evowl_main_badge_silver";
 	public static final String EVOWLMAIN_GOLD = "evowl_main_badge_gold";
+	public static final String REASONER_EXCEPTION = "reasoner_exception_message";
 
 	
 	public static String createSpaceSeperatedStringFromSet(Set<String> set) {

@@ -27,7 +27,7 @@ import owl.cs.analysis.utilities.OntologyBinding;
 
 public class ExportRDF {
 
-	public static boolean exportMeasurements(Map<String,String> rec, String url, File f) {
+	public static boolean exportMeasurements(Map<String,String> rec, String url, File f, String instrument) {
 		OWLOntologyManager man = OWLManager.createOWLOntologyManager();
 		OWLDataFactory df = man.getOWLDataFactory();
 		try {
@@ -36,7 +36,10 @@ public class ExportRDF {
 			OWLObjectProperty hasMeasurement = df.getOWLObjectProperty(IRI.create(OntologyBinding.getHasMeasurementIRI()));
 			OWLClass deployloc = df.getOWLClass(IRI.create(OntologyBinding.getOntologyDeployLocationClass()));
 			OWLDataProperty hasMeasurementValue = df.getOWLDataProperty(IRI.create(OntologyBinding.getHasMeasurementValueIRI()));
+			OWLDataProperty hasMeasurementInstrument = df.getOWLDataProperty(IRI.create(OntologyBinding.getHasMeasurementInstrumentIRI()));
+			OWLDataProperty hasRecordingDate = df.getOWLDataProperty(IRI.create(OntologyBinding.getHasRecordingDateIRI()));
 			OWLLiteral date = df.getOWLLiteral(new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
+			OWLLiteral instrumentlit = df.getOWLLiteral(instrument);
 			for(String key:rec.keySet()) {
 				String value = rec.get(key);
 				OWLLiteral val = df.getOWLLiteral(value);
@@ -46,6 +49,8 @@ public class ExportRDF {
 				man.addAxiom(out, df.getOWLClassAssertionAxiom(metric, measurement));
 				man.addAxiom(out, df.getOWLClassAssertionAxiom(deployloc, subject));
 				man.addAxiom(out, df.getOWLDataPropertyAssertionAxiom(hasMeasurementValue, measurement, val));
+				man.addAxiom(out, df.getOWLDataPropertyAssertionAxiom(hasMeasurementInstrument, measurement, instrumentlit));
+				man.addAxiom(out, df.getOWLDataPropertyAssertionAxiom(hasRecordingDate, measurement, date));
 			}
 			man.saveOntology(out, new RDFXMLDocumentFormat(),new FileOutputStream(f));
 			return true;

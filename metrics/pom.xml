@@ -20,6 +20,8 @@
 		<module>../metrics.utilities.oa4</module>
 		<module>../metrics.utilities.oa5</module>
 		<module>../metrics.harvest.oa3</module>
+		<module>../metrics.harvest.oa4</module>
+		<module>../metrics.harvest.oa5</module>
 		<module>../metrics.harvest.url</module>
 		<module>../metrics.server</module>
 		<module>../metrics.exampleclient</module>

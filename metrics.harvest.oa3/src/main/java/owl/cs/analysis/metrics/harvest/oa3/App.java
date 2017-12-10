@@ -16,7 +16,7 @@ public class App
 		File ontology = new File(args[1]);
 		File export = new File(args[2],"metrics.harvest.oa3"+ontology.getName()+".rdf");
 		
-		OntologyAnalysis oa = new OntologyAnalysisOA3(ontology,url);
+		OntologyAnalysis oa = new OntologyAnalysisOA(ontology,url);
 		oa.exportRDFXML(export);
     }
 }

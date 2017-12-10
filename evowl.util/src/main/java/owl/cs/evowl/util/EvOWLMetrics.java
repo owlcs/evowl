@@ -2,13 +2,15 @@ package owl.cs.evowl.util;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import owl.cs.analysis.utilities.MetricLabels;
 import owl.cs.analysis.utilities.OntologyBinding;
 
 public class EvOWLMetrics {
-	public final static String NONEMPTY = OntologyBinding.entityIRI(MetricLabels.OA3_NONEMPTY);
+	public final static String NONEMPTY = OntologyBinding.entityIRI(MetricLabels.NONEMPTY);
 	public final static String OA3 = OntologyBinding.entityIRI(MetricLabels.OA3_PARSEABLE);
 	public final static String OA4 = OntologyBinding.entityIRI(MetricLabels.OA4_PARSEABLE);
 	public final static String OA5 = OntologyBinding.entityIRI(MetricLabels.OA5_PARSEABLE);
@@ -18,7 +20,7 @@ public class EvOWLMetrics {
 	public final static String OWL2QL = OntologyBinding.entityIRI(MetricLabels.BOOL_PROFILE_OWL2_QL);
 	public final static String OWL2RL = OntologyBinding.entityIRI(MetricLabels.BOOL_PROFILE_OWL2_RL);
 	public final static String RDFS = OntologyBinding.entityIRI(MetricLabels.BOOL_PROFILE_RDFS);
-	public final static String URL_HEALTHY = OntologyBinding.entityIRI(MetricLabels.URL_HEALTHY);
+	public final static String URL_HEALTHY = OntologyBinding.entityIRI(MetricLabels.URL_DOWNLOADABLE);
 	public final static String CONSISTENT = OntologyBinding.entityIRI(MetricLabels.CONSISTENT);
 
 	public final static String MAIN_BROKEN = OntologyBinding.entityIRI("evowl_main_broken");
@@ -47,8 +49,21 @@ public class EvOWLMetrics {
 		aMap.put(EvOWLMetrics.OWL2QL, "https://purl.org/evowl/owl2/ql");
 		aMap.put(EvOWLMetrics.OWL2RL, "https://purl.org/evowl/owl2/rl");
 		aMap.put(EvOWLMetrics.RDFS, "https://purl.org/evowl/rdfs");
+		aMap.put(EvOWLMetrics.CONSISTENT, "https://purl.org/evowl/consistent");
 
 		badges = Collections.unmodifiableMap(aMap);
+	}
+
+	public static final Set<String> generalMetrics;
+	static {
+		Set<String> aMap = new HashSet<>();
+
+		aMap.add(EvOWLMetrics.URL_HEALTHY);
+		aMap.add(EvOWLMetrics.OA3);
+		aMap.add(EvOWLMetrics.OA4);
+		aMap.add(EvOWLMetrics.OA5);
+
+		generalMetrics = Collections.unmodifiableSet(aMap);
 	}
 
 	public static OWLBadge getBadge(String metric) {
