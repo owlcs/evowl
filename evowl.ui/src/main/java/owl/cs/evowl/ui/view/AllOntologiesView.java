@@ -1,5 +1,6 @@
 package owl.cs.evowl.ui.view;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.vaadin.shared.ui.ContentMode;
@@ -9,6 +10,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.renderers.HtmlRenderer;
 
 import owl.cs.evowl.ui.MetricsServer;
+import owl.cs.evowl.util.EvOWLMetrics;
 import owl.cs.evowl.util.OWLBadge;
 import owl.cs.evowl.util.Ontology;
 
@@ -47,8 +49,17 @@ public class AllOntologiesView extends VerticalLayout {
 	}
 
 	private String allBadgeHTML(Ontology o) {
+		List<OWLBadge> badges = new ArrayList<>();
+		for (String metric : EvOWLMetrics.badgeorder) {
+			for (OWLBadge b : o.getBadges()) {
+				if (b.getMetric().equals(metric)) {
+					badges.add(b);
+				}
+			}
+		}
+
 		StringBuilder sb = new StringBuilder();
-		for (OWLBadge b : o.getBadges()) {
+		for (OWLBadge b : badges) {
 			sb.append("<a href=\"www.google.de\"><img src=" + b.getBadgeLocation() + " alt=\"" + b.getMetric()
 					+ "\" height=\"30\" width=\"30\" /></a>");
 		}

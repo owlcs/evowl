@@ -1,8 +1,10 @@
 package owl.cs.evowl.util;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -26,7 +28,7 @@ public class EvOWLMetrics {
 	public final static String MAIN_BROKEN = OntologyBinding.entityIRI("evowl_main_broken");
 	public final static String MAIN_BRONZE = OntologyBinding.entityIRI("evowl_main_bronze");
 	public final static String MAIN_GREY = OntologyBinding.entityIRI("evowl_main_grey");
-	public final static String MAIN_UNEVALUATED = OntologyBinding.entityIRI("evowl_main_bronze");
+	public final static String MAIN_UNEVALUATED = OntologyBinding.entityIRI("evowl_main_unevaluated");
 	public final static String MAIN_SILVER = OntologyBinding.entityIRI("evowl_main_silver");
 	public final static String MAIN_GOLD = OntologyBinding.entityIRI("evowl_main_gold");
 
@@ -54,6 +56,24 @@ public class EvOWLMetrics {
 		aMap.put(EvOWLMetrics.CONSISTENT, "https://purl.org/evowl/consistent");
 
 		badges = Collections.unmodifiableMap(aMap);
+	}
+	
+	public static final List<String> badgeorder;
+	static {
+		List<String> aMap = new ArrayList<>();
+		aMap.add(EvOWLMetrics.URL_HEALTHY);
+		aMap.add(EvOWLMetrics.OA3);
+		aMap.add(EvOWLMetrics.OA4);
+		aMap.add(EvOWLMetrics.OA5);
+		aMap.add(EvOWLMetrics.NONEMPTY);
+		aMap.add(EvOWLMetrics.OWL2);
+		aMap.add(EvOWLMetrics.RDFS);
+		aMap.add(EvOWLMetrics.OWL2DL);
+		aMap.add(EvOWLMetrics.OWL2EL);
+		aMap.add(EvOWLMetrics.OWL2QL);
+		aMap.add(EvOWLMetrics.OWL2RL);
+		aMap.add(EvOWLMetrics.CONSISTENT);
+		badgeorder = Collections.unmodifiableList(aMap);
 	}
 
 	public static final Set<String> generalMetrics;

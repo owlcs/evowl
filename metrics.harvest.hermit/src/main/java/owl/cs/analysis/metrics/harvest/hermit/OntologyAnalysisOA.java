@@ -1,4 +1,4 @@
-package owl.cs.analysis.metrics.harvest.oa5;
+package owl.cs.analysis.metrics.harvest.hermit;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -48,6 +48,7 @@ public class OntologyAnalysisOA {
 		this.ontology = ontology;
 		this.url= url;
 		owlapiParse();
+		gatherMetrics();
 	}
 
 	protected void owlapiParse() {
