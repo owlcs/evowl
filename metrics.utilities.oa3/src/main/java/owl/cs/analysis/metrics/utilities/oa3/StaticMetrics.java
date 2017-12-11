@@ -1,7 +1,6 @@
 package owl.cs.analysis.metrics.utilities.oa3;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -22,7 +21,6 @@ import org.semanticweb.owlapi.metrics.ReferencedDataPropertyCount;
 import org.semanticweb.owlapi.metrics.ReferencedIndividualCount;
 import org.semanticweb.owlapi.metrics.ReferencedObjectPropertyCount;
 import org.semanticweb.owlapi.model.AxiomType;
-import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
@@ -36,7 +34,6 @@ import org.semanticweb.owlapi.model.OWLObjectIntersectionOf;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyID;
-import org.semanticweb.owlapi.model.OWLOntologyLoaderConfiguration;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 import org.semanticweb.owlapi.model.OWLSubObjectPropertyOfAxiom;
@@ -51,20 +48,16 @@ import org.semanticweb.owlapi.profiles.OWLProfileViolation;
 import org.semanticweb.owlapi.util.DLExpressivityChecker;
 
 import owl.cs.analysis.utilities.MetricLabels;
+import owl.cs.analysis.utilities.StringUtilities;
 import uk.ac.manchester.cs.owl.owlapi.OWLObjectOneOfImpl;
 
 public class StaticMetrics {
 
 	private final OWLOntology item;
-	private final OWLOntologyManager manager;
 	private final List<String> owlprofileviolations = new ArrayList<String>();
-	private final List<OWLProfileViolation> dlprofileviolation = new ArrayList<OWLProfileViolation>();
-	protected OWLOntologyLoaderConfiguration config = new OWLOntologyLoaderConfiguration();
 
 	public StaticMetrics(OWLOntology item) {
 		this.item = item;
-		this.manager = item.getOWLOntologyManager();
-
 	}
 
 	// ENTITIES
@@ -98,6 +91,25 @@ public class StaticMetrics {
 		return false;
 	}
 
+	private Map<String, Integer> getOWLClassExpressionCount(boolean includeImportsClosure) {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		Set<OWLAxiom> axioms = getAxioms(includeImportsClosure);
+
+		for (OWLAxiom ax : axioms) {
+			for (OWLClassExpression cl : ax.getNestedClassExpressions()) {
+				String type = cl.getClassExpressionType().getName();
+				if (map.containsKey(type)) {
+					Integer i = map.get(type);
+					map.put(type, (i + 1));
+				} else {
+					map.put(type, 1);
+				}
+			}
+		}
+
+		return map;
+	}
+
 	private boolean isABoxContainsNominals(boolean b) {
 		for (OWLAxiom ax : ExperimentUtilities.getABoxAxioms(getLogicalAxioms(b, true))) {
 			for (OWLClassExpression cl : ax.getNestedClassExpressions()) {
@@ -127,37 +139,24 @@ public class StaticMetrics {
 		return getOntology().getDatatypesInSignature(included).size();
 	}
 
-	public Map<String, Integer> getDatatypesWithAxiomOccurrenceCount(boolean includeImportsClosure) {
-		Map<String, Integer> map = new HashMap<String, Integer>();
-		Set<OWLAxiom> axioms = getAxioms(includeImportsClosure);
-		for (OWLAxiom axiom : axioms) {
-			Set<OWLDatatype> dtypes = axiom.getDatatypesInSignature();
-			for (OWLDatatype datatype : dtypes) {
-				String dtname = datatype.toString();
-				if (datatype.isBuiltIn()) {
-					dtname = datatype.getBuiltInDatatype().toString();
-				}
-				if (map.containsKey(dtname)) {
-					Integer itemp = map.get(dtname);
-					itemp++;
-					map.put(dtname, itemp);
-				} else {
-					map.put(dtname, 1);
-				}
-			}
-		}
-		return map;
-	}
+	public Map<String, Integer> getBuiltInDatatypes(boolean included) {
 
-	public Set<String> getBuiltInDatatypes(boolean included) {
-		Set<String> set = new HashSet<String>();
+		Map<String, Integer> map = new HashMap<String, Integer>();
 		Set<OWLDatatype> datatypes = getOntology().getDatatypesInSignature(included);
+
 		for (OWLDatatype datatype : datatypes) {
 			if (datatype.isBuiltIn()) {
-				set.add(datatype.getBuiltInDatatype().toString());
+				String type = datatype.getBuiltInDatatype().getShortForm();
+				if (map.containsKey(type)) {
+					Integer i = map.get(type);
+					map.put(type, (i + 1));
+				} else {
+					map.put(type, 1);
+				}
 			}
 		}
-		return set;
+
+		return map;
 	}
 
 	public Set<String> getNotBuiltInDatatypes(boolean included) {
@@ -358,7 +357,6 @@ public class StaticMetrics {
 		for (OWLProfileViolation vio : report.getViolations()) {
 			String s = vio.getClass().getSimpleName();
 			owlprofileviolations.add(s);
-			dlprofileviolation.add(vio);
 		}
 		return report.isInProfile();
 	}
@@ -583,17 +581,23 @@ public class StaticMetrics {
 	}
 
 	public OWLOntologyManager getManager() {
-		return this.manager;
+		return getOntology().getOWLOntologyManager();
 	}
 
-	public String getOwlprofileviolations() {
-		StringBuilder s = new StringBuilder();
+	public Map<String, Integer> getOwlprofileviolations() {
+		Map<String, Integer> map = new HashMap<String, Integer>();
 		Set<String> uniqueviolations = new HashSet<String>();
 		uniqueviolations.addAll(owlprofileviolations);
 		for (String vio : uniqueviolations) {
-			s.append(vio + ":" + Collections.frequency(owlprofileviolations, vio) + " ");
+			if (map.containsKey(vio)) {
+				Integer i = map.get(vio);
+				map.put(vio, (i + 1));
+			} else {
+				map.put(vio, 1);
+			}
 		}
-		return s.toString();
+
+		return map;
 	}
 
 	private String getMostFrequentlyUsedClassInLogicalAxioms(boolean includeImportsClosure) {
@@ -685,11 +689,6 @@ public class StaticMetrics {
 		return returnstring;
 	}
 
-	public List<OWLProfileViolation> getOWLDLProfileViolations() {
-		isOWL2DLProfile();
-		return dlprofileviolation;
-	}
-
 	public Map<String, String> getEssentialMetrics() {
 		Map<String, String> csvData = new HashMap<String, String>();
 		csvData.put("owlapi_version", ExperimentUtilities.getResourcePath(getOntology()).getName());
@@ -735,19 +734,11 @@ public class StaticMetrics {
 		csvData.put(MetricLabels.BOOL_PROFILE_OWL2_QL, isOWL2QLProfile() + "");
 		csvData.put(MetricLabels.BOOL_PROFILE_OWL2_RL, isOWL2RLProfile() + "");
 		csvData.put(MetricLabels.BOOL_PROFILE_RDFS, isRDFS() + "");
-		csvData.put(MetricLabels.VIOLATION_PROFILE_OWL2_DL, getOwlprofileviolations() + "");
-		csvData.put(MetricLabels.CONSTRUCTS_INCL,
-				OntologyUtilities.createSpaceSeperatedStringFromSet(getConstructs(true)) + "");
-		csvData.put(MetricLabels.CONSTRUCTS,
-				OntologyUtilities.createSpaceSeperatedStringFromSet(getConstructs(false)) + "");
-		csvData.put(MetricLabels.AXIOM_TYPES,
-				OntologyUtilities.createSpaceSeperatedStringFromSet(getAxiomTypes(false)) + "");
-		csvData.put(MetricLabels.AXIOM_TYPES_INCL,
-				OntologyUtilities.createSpaceSeperatedStringFromSet(getAxiomTypes(true)) + "");
-		csvData.put(MetricLabels.AXIOMTYPE_COUNT,
-				OntologyUtilities.createSpaceSeperatedStringFromMap(getAxiomTypeCounts(false)) + "");
-		csvData.put(MetricLabels.AXIOMTYPE_COUNT_INCL,
-				OntologyUtilities.createSpaceSeperatedStringFromMap(getAxiomTypeCounts(true)) + "");
+		csvData.putAll(StringUtilities.createPrefixedMap(getOwlprofileviolations(), "viol"));
+		csvData.putAll(StringUtilities.createPrefixedSet(getConstructs(true), "const_incl"));
+		csvData.putAll(StringUtilities.createPrefixedSet(getConstructs(false), "const"));
+		csvData.putAll(StringUtilities.createPrefixedMap(getAxiomTypeCounts(false), "axt"));
+		csvData.putAll(StringUtilities.createPrefixedMap(getAxiomTypeCounts(true), "axt_incl"));
 		csvData.put(MetricLabels.TBOX_CONTAINS_NOMINALS_INCL, isTBoxContainsNominals(true) + "");
 		csvData.put(MetricLabels.TBOX_CONTAINS_NOMINALS, isTBoxContainsNominals(false) + "");
 		csvData.put(MetricLabels.ABOX_CONTAINS_NOMINALS_INCL, isABoxContainsNominals(true) + "");
@@ -809,18 +800,14 @@ public class StaticMetrics {
 			csvData.put(MetricLabels.CYCLE, "unkown");
 		}
 
-		csvData.put(MetricLabels.DATATYPE_AXIOMCOUNT,
-				OntologyUtilities.createSpaceSeperatedStringFromMap(getDatatypesWithAxiomOccurrenceCount(false)) + "");
-		csvData.put(MetricLabels.DATATYPE_AXIOMCOUNT_INCL,
-				OntologyUtilities.createSpaceSeperatedStringFromMap(getDatatypesWithAxiomOccurrenceCount(true)) + "");
-		csvData.put(MetricLabels.DATATYPES,
-				OntologyUtilities.createSpaceSeperatedStringFromSet(getBuiltInDatatypes(false)) + "");
-		csvData.put(MetricLabels.DATATYPES_INCL,
-				OntologyUtilities.createSpaceSeperatedStringFromSet(getBuiltInDatatypes(true)) + "");
+		csvData.putAll(StringUtilities.createPrefixedMap(getBuiltInDatatypes(false), "dt_builtin"));
+		csvData.putAll(StringUtilities.createPrefixedMap(getBuiltInDatatypes(true), "dt_builtin_incl"));
+		csvData.putAll(StringUtilities.createPrefixedMap(getOWLClassExpressionCount(false), "exp"));
+		csvData.putAll(StringUtilities.createPrefixedMap(getOWLClassExpressionCount(true), "exp_incl"));
 		csvData.put(MetricLabels.DATATYPES_NOT_BUILT_IN,
-				OntologyUtilities.createSpaceSeperatedStringFromSet(getNotBuiltInDatatypes(false)) + "");
+				StringUtilities.createSpaceSeperatedStringFromSet(getNotBuiltInDatatypes(false)));
 		csvData.put(MetricLabels.DATATYPES_NOT_BUILT_IN_INCL,
-				OntologyUtilities.createSpaceSeperatedStringFromSet(getNotBuiltInDatatypes(true)) + "");
+				StringUtilities.createSpaceSeperatedStringFromSet(getNotBuiltInDatatypes(true)));
 
 		csvData.put(MetricLabels.MOST_FRQUENTLY_USED_CONCEPT, getMostFrequentlyUsedClassInLogicalAxioms(false) + "");
 

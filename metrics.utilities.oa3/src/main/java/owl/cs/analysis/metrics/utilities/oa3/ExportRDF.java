@@ -35,6 +35,7 @@ public class ExportRDF {
 			OWLNamedIndividual subject = df.getOWLNamedIndividual(IRI.create(url));
 			OWLObjectProperty hasMeasurement = df.getOWLObjectProperty(IRI.create(OntologyBinding.getHasMeasurementIRI()));
 			OWLClass deployloc = df.getOWLClass(IRI.create(OntologyBinding.getOntologyDeployLocationClass()));
+			//OWLClass cl_measurement = df.getOWLClass(IRI.create(OntologyBinding.getMeasurementClass()));
 			OWLDataProperty hasMeasurementValue = df.getOWLDataProperty(IRI.create(OntologyBinding.getHasMeasurementValueIRI()));
 			OWLDataProperty hasMeasurementInstrument = df.getOWLDataProperty(IRI.create(OntologyBinding.getHasMeasurementInstrumentIRI()));
 			OWLDataProperty hasRecordingDate = df.getOWLDataProperty(IRI.create(OntologyBinding.getHasRecordingDateIRI()));

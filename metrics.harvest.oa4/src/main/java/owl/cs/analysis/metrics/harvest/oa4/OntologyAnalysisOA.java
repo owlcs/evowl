@@ -18,6 +18,7 @@ import owl.cs.analysis.metrics.utilities.oa4.OntologyUtilities;
 import owl.cs.analysis.metrics.utilities.oa4.StaticMetrics;
 import owl.cs.analysis.utilities.MetricLabels;
 import owl.cs.analysis.utilities.OntologyAnalysis;
+import owl.cs.analysis.utilities.StringUtilities;
 
 public class OntologyAnalysisOA extends OntologyAnalysis {
 
@@ -85,11 +86,11 @@ public class OntologyAnalysisOA extends OntologyAnalysis {
 			addResult(r, data.get(r));
 		}
 		addResult(MetricLabels.MISSING_INPORTS,
-				OntologyUtilities.createSpaceSeperatedStringFromSet(getMissingImportsDeclarations()) + "");
+				StringUtilities.createSpaceSeperatedStringFromSet(getMissingImportsDeclarations()) + "");
 		addResult(MetricLabels.VALID_IMPORTS,
-				OntologyUtilities.createSpaceSeperatedStringFromSet(getValidImports(false)) + "");
+				StringUtilities.createSpaceSeperatedStringFromSet(getValidImports(false)) + "");
 		addResult(MetricLabels.VALID_IMPORTS_INCL,
-				OntologyUtilities.createSpaceSeperatedStringFromSet(getValidImports(true)) + "");
+				StringUtilities.createSpaceSeperatedStringFromSet(getValidImports(true)) + "");
 	}
 
 	public boolean exportRDFXML(File f) {

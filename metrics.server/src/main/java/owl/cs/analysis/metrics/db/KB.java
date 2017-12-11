@@ -16,6 +16,7 @@ import org.eclipse.rdf4j.query.BindingSet;
 import org.eclipse.rdf4j.query.QueryResults;
 import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
+import org.eclipse.rdf4j.repository.manager.RemoteRepositoryManager;
 import org.eclipse.rdf4j.repository.sail.SailRepository;
 import org.eclipse.rdf4j.repository.util.Repositories;
 import org.eclipse.rdf4j.rio.RDFFormat;
@@ -29,13 +30,20 @@ import owl.cs.analysis.utilities.OntologyBinding;
 
 public class KB {
 
+	private static String store = "http://localhost:8080/rdf4j-server/repositories/evowl_one";
 	private static KB instance = null;
 	Repository db = null;
 	int TRUNCATESTRING = 300;
 
 	protected KB() {
 		File dataDir = new File("triplestore");
-		db = new SailRepository(new ForwardChainingRDFSInferencer(new MemoryStore(dataDir)));
+		String serverUrl = "http://localhost:8080/rdf4j-server";
+		RemoteRepositoryManager manager = new RemoteRepositoryManager(serverUrl);
+		manager.initialize();
+
+		db = manager.getRepository("evowl_one");
+		// new SailRepository(new ForwardChainingRDFSInferencer(new
+		// MemoryStore(dataDir)));
 		db.initialize();
 	}
 
@@ -92,14 +100,16 @@ public class KB {
 		JSONArray measures = new JSONArray();
 
 		// TODO: add triple pattern: ?metric rdf:type <http:\\metricclass>
-		
-		String query = "SELECT ?measure ?metric ?value ?instrument ?date "
-				+ "WHERE " + "{ " 
-				+ "<" + url + "> <"+ OntologyBinding.getHasMeasurementIRI() + "> ?measure . " 
+
+		String query = "SELECT ?measure ?metric ?value ?instrument ?date ?metric_label " + "WHERE " + "{ " + "<" + url + "> <"
+				+ OntologyBinding.getHasMeasurementIRI() + "> ?measure . " 
 				+ "?measure rdf:type ?metric . "
-				+ "?measure <" + OntologyBinding.getHasMeasurementValueIRI() + "> ?value . " 
-				+ "?measure <" + OntologyBinding.getHasMeasurementInstrumentIRI() + "> ?instrument . " 
-				+ "?measure <" + OntologyBinding.getHasRecordingDateIRI() + "> ?date . " 
+				+ "?metric rdfs:subClassOf <"+OntologyBinding.getMeasurementClass()+"> ." 
+				+ "?metric <"+ OntologyBinding.getMachineReadableIRI() + "> ?metric_label ."
+				+ "?measure <" + OntologyBinding.getHasMeasurementValueIRI() + "> ?value . " + "?measure <"
+				+ OntologyBinding.getHasMeasurementInstrumentIRI() + "> ?instrument . " + "?measure <"
+				+ OntologyBinding.getHasRecordingDateIRI() + "> ?date . " 
+				+ "FILTER (?metric != <"+OntologyBinding.getMeasurementClass()+">) "
 				+ " }";
 
 		List<BindingSet> results = new ArrayList<>();
@@ -113,12 +123,14 @@ public class KB {
 			Value metrici = bs.getValue("metric");
 			Value valuei = bs.getValue("value");
 			Value instrumenti = bs.getValue("instrument");
+			Value metric_labeli = bs.getValue("metric_label");
 			Value datei = bs.getValue("date");
 			measure.put("measureid", measurei.stringValue());
 			measure.put("metric", metrici.stringValue());
 			measure.put("value", jsonpreprocess(valuei.stringValue()));
 			measure.put("instrument", instrumenti.stringValue());
 			measure.put("recordingdate", datei.stringValue());
+			measure.put("metric_label", metric_labeli.stringValue());
 			measures.add(measure);
 		}
 		obj.put("measurements", measures);
@@ -164,7 +176,8 @@ public class KB {
 	}
 
 	private String jsonpreprocess(String stringValue) {
-		String s = stringValue.length()<=TRUNCATESTRING? stringValue : stringValue.substring(0, TRUNCATESTRING)+" [...]";
+		String s = stringValue.length() <= TRUNCATESTRING ? stringValue
+				: stringValue.substring(0, TRUNCATESTRING) + " [...]";
 		return JSONValue.escape(s);
 	}
 

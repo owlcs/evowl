@@ -4,7 +4,11 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
 public class StringUtilities {
 
@@ -46,6 +50,58 @@ public class StringUtilities {
 	public static String readFile(String path, Charset encoding) throws IOException {
 		byte[] encoded = Files.readAllBytes(Paths.get(path));
 		return new String(encoded, encoding);
+	}
+	
+	public static String createSpaceSeperatedStringFromMap(Map<String, Integer> map) {
+		StringBuilder builder = new StringBuilder();
+		Iterator<Entry<String, Integer>> it = map.entrySet().iterator();
+
+		while (it.hasNext()) {
+			Map.Entry<String, Integer> pairs = (Map.Entry<String, Integer>) it.next();
+
+			builder.append(pairs.getKey());
+			builder.append(":");
+			builder.append(pairs.getValue());
+			builder.append(" ");
+		}
+		return builder.toString();
+	}
+	
+	public static String createSpaceSeperatedStringFromOWLClassSet(Set<Object> set) {
+		StringBuilder builder = new StringBuilder();
+		for (Object s : set) {
+			builder.append(s.toString());
+			builder.append(" ");
+		}
+		return builder.toString();
+	}
+
+	public static Map<String, String> createPrefixedSet(Set<? extends Object> set, String prefix) {
+		Map<String, String> m = new HashMap<>();
+		for (Object s :set) {
+			m.put(prefix + "_" + s.toString().toLowerCase(), true + "");
+		}
+		return m;
+	}
+	
+	public static Map<String, String> createPrefixedMap(Map<String, Integer> map, String prefix) {
+		Map<String, String> m = new HashMap<>();
+		Iterator<Entry<String, Integer>> it = map.entrySet().iterator();
+
+		while (it.hasNext()) {
+			Map.Entry<String, Integer> pairs = (Map.Entry<String, Integer>) it.next();
+			m.put(prefix + "_" + pairs.getKey().toLowerCase(), pairs.getValue() + "");
+		}
+		return m;
+	}
+	
+	public static <T> String createSpaceSeperatedStringFromSet(Set<T> set) {
+		StringBuilder builder = new StringBuilder();
+		for (T s : set) {
+			builder.append(s.toString());
+			builder.append(" ");
+		}
+		return builder.toString();
 	}
 
 }

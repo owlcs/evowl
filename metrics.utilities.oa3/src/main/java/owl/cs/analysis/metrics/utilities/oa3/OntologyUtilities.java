@@ -3,117 +3,126 @@ package owl.cs.analysis.metrics.utilities.oa3;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
 import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyID;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.SetOntologyID;
+import org.semanticweb.owlapi.profiles.CycleInDatatypeDefinition;
+import org.semanticweb.owlapi.profiles.DatatypeIRIAlsoUsedAsClassIRI;
+import org.semanticweb.owlapi.profiles.EmptyOneOfAxiom;
+import org.semanticweb.owlapi.profiles.IllegalPunning;
+import org.semanticweb.owlapi.profiles.InsufficientIndividuals;
+import org.semanticweb.owlapi.profiles.InsufficientOperands;
+import org.semanticweb.owlapi.profiles.InsufficientPropertyExpressions;
+import org.semanticweb.owlapi.profiles.LastPropertyInChainNotInImposedRange;
+import org.semanticweb.owlapi.profiles.LexicalNotInLexicalSpace;
 import org.semanticweb.owlapi.profiles.OWL2DLProfile;
 import org.semanticweb.owlapi.profiles.OWL2Profile;
 import org.semanticweb.owlapi.profiles.OWLProfile;
 import org.semanticweb.owlapi.profiles.OWLProfileViolation;
+import org.semanticweb.owlapi.profiles.OntologyIRINotAbsolute;
 import org.semanticweb.owlapi.profiles.OntologyVersionIRINotAbsolute;
+import org.semanticweb.owlapi.profiles.UseOfAnonymousIndividual;
+import org.semanticweb.owlapi.profiles.UseOfBuiltInDatatypeInDatatypeDefinition;
+import org.semanticweb.owlapi.profiles.UseOfDataOneOfWithMultipleLiterals;
+import org.semanticweb.owlapi.profiles.UseOfDefinedDatatypeInDatatypeRestriction;
+import org.semanticweb.owlapi.profiles.UseOfIllegalAxiom;
+import org.semanticweb.owlapi.profiles.UseOfIllegalClassExpression;
+import org.semanticweb.owlapi.profiles.UseOfIllegalDataRange;
+import org.semanticweb.owlapi.profiles.UseOfIllegalFacetRestriction;
+import org.semanticweb.owlapi.profiles.UseOfNonAbsoluteIRI;
+import org.semanticweb.owlapi.profiles.UseOfNonAtomicClassExpression;
+import org.semanticweb.owlapi.profiles.UseOfNonEquivalentClassExpression;
+import org.semanticweb.owlapi.profiles.UseOfNonSimplePropertyInAsymmetricObjectPropertyAxiom;
+import org.semanticweb.owlapi.profiles.UseOfNonSimplePropertyInCardinalityRestriction;
+import org.semanticweb.owlapi.profiles.UseOfNonSimplePropertyInDisjointPropertiesAxiom;
+import org.semanticweb.owlapi.profiles.UseOfNonSimplePropertyInFunctionalPropertyAxiom;
+import org.semanticweb.owlapi.profiles.UseOfNonSimplePropertyInInverseFunctionalObjectPropertyAxiom;
+import org.semanticweb.owlapi.profiles.UseOfNonSimplePropertyInIrreflexivePropertyAxiom;
+import org.semanticweb.owlapi.profiles.UseOfNonSimplePropertyInObjectHasSelf;
+import org.semanticweb.owlapi.profiles.UseOfNonSubClassExpression;
+import org.semanticweb.owlapi.profiles.UseOfNonSuperClassExpression;
+import org.semanticweb.owlapi.profiles.UseOfObjectOneOfWithMultipleIndividuals;
+import org.semanticweb.owlapi.profiles.UseOfObjectPropertyInverse;
+import org.semanticweb.owlapi.profiles.UseOfPropertyInChainCausesCycle;
+import org.semanticweb.owlapi.profiles.UseOfReservedVocabularyForAnnotationPropertyIRI;
+import org.semanticweb.owlapi.profiles.UseOfReservedVocabularyForClassIRI;
+import org.semanticweb.owlapi.profiles.UseOfReservedVocabularyForDataPropertyIRI;
+import org.semanticweb.owlapi.profiles.UseOfReservedVocabularyForIndividualIRI;
+import org.semanticweb.owlapi.profiles.UseOfReservedVocabularyForObjectPropertyIRI;
+import org.semanticweb.owlapi.profiles.UseOfTopDataPropertyAsSubPropertyInSubPropertyAxiom;
+import org.semanticweb.owlapi.profiles.UseOfUndeclaredAnnotationProperty;
+import org.semanticweb.owlapi.profiles.UseOfUndeclaredClass;
+import org.semanticweb.owlapi.profiles.UseOfUndeclaredDataProperty;
+import org.semanticweb.owlapi.profiles.UseOfUndeclaredDatatype;
+import org.semanticweb.owlapi.profiles.UseOfUndeclaredObjectProperty;
+import org.semanticweb.owlapi.profiles.UseOfUnknownDatatype;
 
 public class OntologyUtilities {
 
-	public static Set<Class<? extends OWLProfileViolation>> permittedViolationsForRepair = preparePermittedViolations();
+	public static final Set<Class<? extends OWLProfileViolation>> permittedViolationsForRepair = new HashSet<>();
+	public static final Set<Class<? extends OWLProfileViolation>> allviolations = preparePermittedViolations();
 
 	private static Set<Class<? extends OWLProfileViolation>> preparePermittedViolations() {
 		Set<Class<? extends OWLProfileViolation>> permittedViolationsForRepair = new HashSet<Class<? extends OWLProfileViolation>>();
-		// permittedViolationsForRepair.add(EmptyOneOfAxiom.class);
-		// permittedViolationsForRepair.add(InsufficientIndividuals.class);
-		// permittedViolationsForRepair.add(InsufficientPropertyExpressions.class);
-		// permittedViolationsForRepair.add(InsufficientAxiomOperands.class);
-		// permittedViolationsForRepair.add(InsufficientObjectExpressionOperands.class);
+		permittedViolationsForRepair.add(EmptyOneOfAxiom.class);
+		permittedViolationsForRepair.add(InsufficientIndividuals.class);
+		permittedViolationsForRepair.add(InsufficientPropertyExpressions.class);
+		permittedViolationsForRepair.add(InsufficientOperands.class);
 
-		// permittedViolationsForRepair.add(OntologyIRINotAbsolute.class);
-		// permittedViolationsForRepair.add(OntologyVersionIRINotAbsolute.class);
-		// permittedViolationsForRepair.add(UseOfNonAbsoluteIRI.class);
-		// permittedViolationsForRepair.add(UseOfUndeclaredAnnotationProperty.class);
-		// permittedViolationsForRepair.add(UseOfUndeclaredClass.class);
-		// permittedViolationsForRepair.add(UseOfUndeclaredDataProperty.class);
-		// permittedViolationsForRepair.add(UseOfUndeclaredDatatype.class);
-		// permittedViolationsForRepair.add(UseOfUndeclaredObjectProperty.class);
+		permittedViolationsForRepair.add(OntologyIRINotAbsolute.class);
+		permittedViolationsForRepair.add(OntologyVersionIRINotAbsolute.class);
+		permittedViolationsForRepair.add(UseOfNonAbsoluteIRI.class);
+		permittedViolationsForRepair.add(UseOfUndeclaredAnnotationProperty.class);
+		permittedViolationsForRepair.add(UseOfUndeclaredClass.class);
+		permittedViolationsForRepair.add(UseOfUndeclaredDataProperty.class);
+		permittedViolationsForRepair.add(UseOfUndeclaredDatatype.class);
+		permittedViolationsForRepair.add(UseOfUndeclaredObjectProperty.class);
 
-		// permittedViolationsForRepair.add(CycleInDatatypeDefinition.class);
-		// permittedViolationsForRepair.add(DatatypeIRIAlsoUsedAsClassIRI.class);
-		// permittedViolationsForRepair.add(IllegalPunning.class);
-		// permittedViolationsForRepair.add(InsufficientOperands.class);
-		// permittedViolationsForRepair.add(LastPropertyInChainNotInImposedRange.class);
-		// permittedViolationsForRepair.add(LexicalNotInLexicalSpace.class);
-		// permittedViolationsForRepair.add(UseOfAnonymousIndividual.class);
-		// permittedViolationsForRepair.add(UseOfBuiltInDatatypeInDatatypeDefinition.class);
-		// permittedViolationsForRepair.add(UseOfDataOneOfWithMultipleLiterals.class);
-		// permittedViolationsForRepair.add(UseOfDefinedDatatypeInDatatypeRestriction.class);
-		// permittedViolationsForRepair.add(UseOfIllegalAxiom.class);
-		// permittedViolationsForRepair.add(UseOfIllegalClassExpression.class);
-		// permittedViolationsForRepair.add(UseOfIllegalDataRange.class);
-		// permittedViolationsForRepair.add(UseOfIllegalFacetRestriction.class);
-		// permittedViolationsForRepair.add(UseOfNonAbsoluteIRI.class);
-		// permittedViolationsForRepair.add(UseOfNonAtomicClassExpression.class);
-		// permittedViolationsForRepair.add(UseOfNonEquivalentClassExpression.class);
-		// permittedViolationsForRepair.add(UseOfNonSimplePropertyInAsymmetricObjectPropertyAxiom.class);
-		// permittedViolationsForRepair.add(UseOfNonSimplePropertyInCardinalityRestriction.class);
-		// permittedViolationsForRepair.add(UseOfNonSimplePropertyInDisjointPropertiesAxiom.class);
-		// permittedViolationsForRepair.add(UseOfNonSimplePropertyInFunctionalPropertyAxiom.class);
-		// permittedViolationsForRepair.add(UseOfNonSimplePropertyInInverseFunctionalObjectPropertyAxiom.class);
-		// permittedViolationsForRepair.add(UseOfNonSimplePropertyInIrreflexivePropertyAxiom.class);
-		// permittedViolationsForRepair.add(UseOfNonSimplePropertyInObjectHasSelf.class);
-		// permittedViolationsForRepair.add(UseOfNonSubClassExpression.class);
-		// permittedViolationsForRepair.add(UseOfNonSuperClassExpression.class);
-		// permittedViolationsForRepair.add(UseOfObjectOneOfWithMultipleIndividuals.class);
-		// permittedViolationsForRepair.add(UseOfObjectPropertyInverse.class);
-		// permittedViolationsForRepair.add(UseOfPropertyInChainCausesCycle.class);
-		// permittedViolationsForRepair.add(UseOfReservedVocabularyForAnnotationPropertyIRI.class);
-		// permittedViolationsForRepair.add(UseOfReservedVocabularyForClassIRI.class);
-		// permittedViolationsForRepair.add(UseOfReservedVocabularyForDataPropertyIRI.class);
-		// permittedViolationsForRepair.add(UseOfReservedVocabularyForIndividualIRI.class);
-		// permittedViolationsForRepair.add(UseOfReservedVocabularyForObjectPropertyIRI.class);
-		// permittedViolationsForRepair.add(UseOfTopDataPropertyAsSubPropertyInSubPropertyAxiom.class);
-		// permittedViolationsForRepair.add(UseOfUnknownDatatype.class);
+		permittedViolationsForRepair.add(CycleInDatatypeDefinition.class);
+		permittedViolationsForRepair.add(DatatypeIRIAlsoUsedAsClassIRI.class);
+		permittedViolationsForRepair.add(IllegalPunning.class);
+		permittedViolationsForRepair.add(InsufficientOperands.class);
+		permittedViolationsForRepair.add(LastPropertyInChainNotInImposedRange.class);
+		permittedViolationsForRepair.add(LexicalNotInLexicalSpace.class);
+		permittedViolationsForRepair.add(UseOfAnonymousIndividual.class);
+		permittedViolationsForRepair.add(UseOfBuiltInDatatypeInDatatypeDefinition.class);
+		permittedViolationsForRepair.add(UseOfDataOneOfWithMultipleLiterals.class);
+		permittedViolationsForRepair.add(UseOfDefinedDatatypeInDatatypeRestriction.class);
+		permittedViolationsForRepair.add(UseOfIllegalAxiom.class);
+		permittedViolationsForRepair.add(UseOfIllegalClassExpression.class);
+		permittedViolationsForRepair.add(UseOfIllegalDataRange.class);
+		permittedViolationsForRepair.add(UseOfIllegalFacetRestriction.class);
+		permittedViolationsForRepair.add(UseOfNonAbsoluteIRI.class);
+		permittedViolationsForRepair.add(UseOfNonAtomicClassExpression.class);
+		permittedViolationsForRepair.add(UseOfNonEquivalentClassExpression.class);
+		permittedViolationsForRepair.add(UseOfNonSimplePropertyInAsymmetricObjectPropertyAxiom.class);
+		permittedViolationsForRepair.add(UseOfNonSimplePropertyInCardinalityRestriction.class);
+		permittedViolationsForRepair.add(UseOfNonSimplePropertyInDisjointPropertiesAxiom.class);
+		permittedViolationsForRepair.add(UseOfNonSimplePropertyInFunctionalPropertyAxiom.class);
+		permittedViolationsForRepair.add(UseOfNonSimplePropertyInInverseFunctionalObjectPropertyAxiom.class);
+		permittedViolationsForRepair.add(UseOfNonSimplePropertyInIrreflexivePropertyAxiom.class);
+		permittedViolationsForRepair.add(UseOfNonSimplePropertyInObjectHasSelf.class);
+		permittedViolationsForRepair.add(UseOfNonSubClassExpression.class);
+		permittedViolationsForRepair.add(UseOfNonSuperClassExpression.class);
+		permittedViolationsForRepair.add(UseOfObjectOneOfWithMultipleIndividuals.class);
+		permittedViolationsForRepair.add(UseOfObjectPropertyInverse.class);
+		permittedViolationsForRepair.add(UseOfPropertyInChainCausesCycle.class);
+		permittedViolationsForRepair.add(UseOfReservedVocabularyForAnnotationPropertyIRI.class);
+		permittedViolationsForRepair.add(UseOfReservedVocabularyForClassIRI.class);
+		permittedViolationsForRepair.add(UseOfReservedVocabularyForDataPropertyIRI.class);
+		permittedViolationsForRepair.add(UseOfReservedVocabularyForIndividualIRI.class);
+		permittedViolationsForRepair.add(UseOfReservedVocabularyForObjectPropertyIRI.class);
+		permittedViolationsForRepair.add(UseOfTopDataPropertyAsSubPropertyInSubPropertyAxiom.class);
+		permittedViolationsForRepair.add(UseOfUnknownDatatype.class);
 		return permittedViolationsForRepair;
-	}
-
-	public static <T> String createSpaceSeperatedStringFromSet(Set<T> set) {
-		StringBuilder builder = new StringBuilder();
-		for (T s : set) {
-			builder.append(s.toString());
-			builder.append(" ");
-		}
-		return builder.toString();
-	}
-
-	public static String createSpaceSeperatedStringFromOWLClassSet(Set<OWLClass> set) {
-		StringBuilder builder = new StringBuilder();
-		for (OWLClass s : set) {
-			builder.append(s.toString());
-			builder.append(" ");
-		}
-		return builder.toString();
-	}
-
-	public static String createSpaceSeperatedStringFromMap(Map<String, Integer> map) {
-		StringBuilder builder = new StringBuilder();
-		Iterator<Entry<String, Integer>> it = map.entrySet().iterator();
-
-		while (it.hasNext()) {
-			Map.Entry<String, Integer> pairs = (Map.Entry<String, Integer>) it.next();
-
-			builder.append(pairs.getKey());
-			builder.append(":");
-			builder.append(pairs.getValue());
-			builder.append(" ");
-		}
-		return builder.toString();
 	}
 
 	public static Set<OWLProfileViolation> repair(OWLOntology ontology, OWLOntologyManager manager) {
@@ -138,9 +147,7 @@ public class OntologyUtilities {
 		List<OWLProfileViolation> violations = owl2Profile.checkOntology(o).getViolations();
 
 		for (OWLProfileViolation violation : violations) {
-			//o.getOWLOntologyManager().applyChanges(violation.repair());
-			// TODO
-			System.err.println("OA3 does not allow profile repair from Violation interface");
+			// TODO o.getOWLOntologyManager().applyChanges(violation.repair());
 			fixedViolations.add(violation);
 		}
 		return fixedViolations;
@@ -154,9 +161,7 @@ public class OntologyUtilities {
 			if (permittedViolationsForRepair.contains(violation.getClass())) {
 				// in case of undeclaredEntity, check whether reserved vocabulary!
 				// System.out.println(violation.getClass());
-				// o.getOWLOntologyManager().applyChanges(violation.repair());
-				// TODO
-				System.err.println("OA3 does not allow profile repair from Violation interface");
+				// TODO o.getOWLOntologyManager().applyChanges(violation.repair());
 				fixedViolations.add(violation);
 			} else if (violation instanceof OntologyVersionIRINotAbsolute) {
 				o.getOWLOntologyManager().applyChanges(repair(violation, o));

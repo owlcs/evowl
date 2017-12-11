@@ -19,6 +19,7 @@
 		<module>../evowl.util</module>
 		<module>../evowl.ws</module>
 		<module>../evowl.ui</module>
+		<module>../evowl.ontology</module>
 	</modules>
 	<build>
 		<plugins>
