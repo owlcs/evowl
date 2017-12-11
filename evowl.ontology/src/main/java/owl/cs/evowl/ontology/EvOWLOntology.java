@@ -24,8 +24,6 @@ import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
 import org.semanticweb.owlapi.util.DLExpressivityChecker;
 import org.semanticweb.owlapi.vocab.OWL2Datatype;
 
-import com.clarkparsia.owlapi.explanation.util.OntologyUtils;
-
 import owl.cs.analysis.metrics.utilities.oa5.OntologyUtilities;
 import owl.cs.analysis.utilities.MetricLabels;
 import owl.cs.analysis.utilities.OntologyBinding;
@@ -83,6 +81,7 @@ public class EvOWLOntology {
 			o.add(df.getOWLSubClassOfAxiom(cl_const, cl_measurement));
 			o.add(df.getOWLSubClassOfAxiom(cl_exp, cl_measurement));
 			o.add(df.getOWLSubClassOfAxiom(cl_dt, cl_measurement));
+			o.add(df.getOWLSubClassOfAxiom(cl_vio, cl_measurement));
 			for (AxiomType obj : AxiomType.AXIOM_TYPES) {
 				o.add(df.getOWLSubClassOfAxiom(
 						df.getOWLClass(OntologyBinding.entityIRI("axt_" + obj.getName().toLowerCase())), cl_axt));
@@ -110,7 +109,7 @@ public class EvOWLOntology {
 			
 			for (Class<? extends OWLProfileViolation> c : OntologyUtilities.allviolations) {
 				o.add(df.getOWLSubClassOfAxiom(
-						df.getOWLClass(OntologyBinding.entityIRI("viol_" + c.getClass().getSimpleName().toLowerCase())), cl_vio));
+						df.getOWLClass(OntologyBinding.entityIRI("viol_" + c.getSimpleName().toLowerCase())), cl_vio));
 			}
 
 			OWLReasoner r = new StructuralReasonerFactory().createReasoner(o);
@@ -134,18 +133,13 @@ public class EvOWLOntology {
 				}
 
 			}
-			// TODO add OBO triples in at this point?
-			// http://www.obofoundry.org/registry/ontologies.ttl
 			man.saveOntology(o, new RDFXMLDocumentFormat(),
 					new FileOutputStream(new File("D:\\metric.pipeline\\evowl_ontology\\ev.owl")));
 		} catch (OWLOntologyCreationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (OWLOntologyStorageException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

@@ -54,7 +54,7 @@ public class KB {
 		return instance;
 	}
 
-	public void rdfXMLInputStreamToSesame(InputStream input) {
+	public void rdfXMLInputStreamToSesame(InputStream input, String format) {
 		// Open a connection to the database
 		if (!isValidRDFXMLInputStream(input)) {
 			throw new IllegalArgumentException("Not a valid input stream");
@@ -64,7 +64,12 @@ public class KB {
 				// ByteArrayOutputStream os = new ByteArrayOutputStream();
 				// o.getOWLOntologyManager().saveOntology(o, os);
 				// ByteArrayInputStream input = new ByteArrayInputStream( os.toByteArray() );
-				conn.add(input, "", RDFFormat.RDFXML);
+				RDFFormat f = RDFFormat.RDFXML;
+
+				if (format.equals("ttl")) {
+					f = RDFFormat.TURTLE;
+				}
+				conn.add(input, "", f);
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -101,16 +106,14 @@ public class KB {
 
 		// TODO: add triple pattern: ?metric rdf:type <http:\\metricclass>
 
-		String query = "SELECT ?measure ?metric ?value ?instrument ?date ?metric_label " + "WHERE " + "{ " + "<" + url + "> <"
-				+ OntologyBinding.getHasMeasurementIRI() + "> ?measure . " 
-				+ "?measure rdf:type ?metric . "
-				+ "?metric rdfs:subClassOf <"+OntologyBinding.getMeasurementClass()+"> ." 
-				+ "?metric <"+ OntologyBinding.getMachineReadableIRI() + "> ?metric_label ."
-				+ "?measure <" + OntologyBinding.getHasMeasurementValueIRI() + "> ?value . " + "?measure <"
+		String query = "SELECT ?measure ?metric ?value ?instrument ?date ?metric_label " + "WHERE " + "{ " + "<" + url
+				+ "> <" + OntologyBinding.getHasMeasurementIRI() + "> ?measure . " + "?measure rdf:type ?metric . "
+				+ "?metric rdfs:subClassOf <" + OntologyBinding.getMeasurementClass() + "> ." + "?metric <"
+				+ OntologyBinding.getMachineReadableIRI() + "> ?metric_label ." + "?measure <"
+				+ OntologyBinding.getHasMeasurementValueIRI() + "> ?value . " + "?measure <"
 				+ OntologyBinding.getHasMeasurementInstrumentIRI() + "> ?instrument . " + "?measure <"
-				+ OntologyBinding.getHasRecordingDateIRI() + "> ?date . " 
-				+ "FILTER (?metric != <"+OntologyBinding.getMeasurementClass()+">) "
-				+ " }";
+				+ OntologyBinding.getHasRecordingDateIRI() + "> ?date . " + "FILTER (?metric != <"
+				+ OntologyBinding.getMeasurementClass() + ">) " + " }";
 
 		List<BindingSet> results = new ArrayList<>();
 		results.addAll(Repositories.tupleQuery(db, query, r -> QueryResults.asList(r)));

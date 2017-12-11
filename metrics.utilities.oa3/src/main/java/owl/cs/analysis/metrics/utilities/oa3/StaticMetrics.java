@@ -586,9 +586,7 @@ public class StaticMetrics {
 
 	public Map<String, Integer> getOwlprofileviolations() {
 		Map<String, Integer> map = new HashMap<String, Integer>();
-		Set<String> uniqueviolations = new HashSet<String>();
-		uniqueviolations.addAll(owlprofileviolations);
-		for (String vio : uniqueviolations) {
+		for (String vio : owlprofileviolations) {
 			if (map.containsKey(vio)) {
 				Integer i = map.get(vio);
 				map.put(vio, (i + 1));

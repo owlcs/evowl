@@ -16,11 +16,7 @@ public class PostMetricsToServer {
 			File f = new File(args[0]);
 			String ws = args[1];
 
-			ClientConfig config = new DefaultClientConfig();
-			Client client = Client.create(config);
-			WebResource service = client.resource(ws);
-			String response = service.type(MediaType.TEXT_XML).accept(MediaType.TEXT_XML).entity(f).post(String.class);
-			System.out.println(response);
+			postRDFFileToServer(f, ws);
 
 		} catch (Exception e) {
 
@@ -28,5 +24,13 @@ public class PostMetricsToServer {
 
 		}
 
+	}
+
+	public static void postRDFFileToServer(File f, String ws) {
+		ClientConfig config = new DefaultClientConfig();
+		Client client = Client.create(config);
+		WebResource service = client.resource(ws);
+		String response = service.type(MediaType.TEXT_XML).accept(MediaType.TEXT_XML).entity(f).post(String.class);
+		System.out.println(response);
 	}
 }
