@@ -101,7 +101,6 @@ public class MetricLabels {
 	public final static String UNSATISFIABLECLASSES_COUNT = "unsatisfiable_class_count";
 	public final static String UNSATISFIABLECLASSES = "unsatisfiable_classes";
 	public final static String INFERRED_SUBSUMPTIONS_COUNT = "inferred_subsumption_count";
-	public final static String ERROR_MESSAGE_REASONING = "reasoner_error_message";
 	public final static String INFERRED_ONLY_ENTAILMENT_COUNT = "inferred_only_entailment_count";
 	public final static String DATATYPES = "datatypes_builtin";
 	public final static String DATATYPES_INCL = "datatypes_builtin_incl";
@@ -111,7 +110,8 @@ public class MetricLabels {
 	public final static String DATATYPES_NOT_BUILT_IN_INCL = "datatypes_not_built_in_incl";
 	public final static String DATATYPE_AXIOMCOUNT = "datatypes_axiomcount";
 	public final static String DATATYPE_AXIOMCOUNT_INCL = "datatypes_axiomcount_incl";
-	public final static String OWLAPILOADEXCEPTION = "owlapiloadexception";
+	public final static String OWLAPILOAD_EXCEPTION = "owlapiloadexception";
+	public final static String OWLAPILOAD_EXCEPTION_MESSAGE = "owlapiloadexception";
 	public final static String UNSUCCESSFULREASONINGEXCEPTION = "reasoner_exception";
 	public final static String COHERENT = "coherent";
 	public final static String REASONERNAME = "reasoner";
@@ -160,13 +160,6 @@ public class MetricLabels {
 	public final static String SUBSUMPTIONS_ATOMIC_REDUNDANT = "subs_atomic_redundant";
 	public final static String SUBSUMPTIONS_ATOMIC_REASONER = "subs_atomic_reasoner";
 	public final static String SIGNATURE_NO_URIS = "signature_w_o_iris";
-	public final static String CLASSIFICATION_TOPIC = "classification_topic";
-	public final static String CLASSIFICATION_SCIENCE = "classification_science";
-	public final static String CLASSIFICATION_NEWS = "classification_news";
-	public final static String CLASSIFICATION_BUSINESS = "classification_business";
-	public final static String CLASSIFICATION_WEBPAGECONTENT = "classification_webcontent";
-	public final static String CLASSIFICATION_HEALTH = "classification_health";
-	public final static String CLASSIFICATION_COMPUTER = "classification_computer";
 	public final static String RULE_CT = "rule_ct";
 	public final static String RULE_CT_INCL = "rule_ct_incl";
 	public final static String TOP_TBOX_AXIOM_TYPE = "top_tbox_axtype";
@@ -192,18 +185,6 @@ public class MetricLabels {
 	public final static String FIXED_VIOLATIONS = "fixed_profile_violations";
 	public final static String STRIPPED_AXIOMTYPES = "stripped_axiomtypes";
 	
-	public final static String STARTPROCESS_TS = "startprocess_ts";
-	public final static String OWLAPILOAD_TS = "owlapiload_ts";
-	public final static String CREATEREASONER_TS = "createreasoner_ts";
-	public final static String CLASSIFICATION_TS = "classification_ts";
-	public final static String DISPOSE_TS = "dispose_ts";
-	public final static String FINISH_TS = "finishprocess_ts";	
-	
-	public final static String PREPROCESSING_TS = "preprocessing_ts";
-	public final static String CONSISTENCYCHECK_TS = "consistencycheck_ts";
-	public final static String PREREASONINGOPTIMISATION_TS = "prereasoningoptimisation_ts";
-	public final static String TRAVERSAL_TS = "traversal_ts";
-	public final static String POSTPROCESSING_TS = "postprocessing_ts";
 	public final static String CLASSIFICATION_CORRECT = "classification_correct";
 	public final static String REASONING_PREPROCESSING_TIME = "reason_pp_dur";
 	public final static String REASONING_MODULARREASONING_TIME = "reason_mmcl_dur";
@@ -258,7 +239,8 @@ public class MetricLabels {
 	public static final String EVOWLMAIN_BRONZE = "evowl_main_badge_bronze";
 	public static final String EVOWLMAIN_SILVER = "evowl_main_badge_silver";
 	public static final String EVOWLMAIN_GOLD = "evowl_main_badge_gold";
-	public static final String REASONER_EXCEPTION = "reasoner_exception_message";
+	public static final String REASONER_EXCEPTION = "reasoner_exception";
+	public static final String REASONER_EXCEPTION_MESSAGE = "reasoner_exception_message";
 
 	
 	public static String createSpaceSeperatedStringFromSet(Set<String> set) {

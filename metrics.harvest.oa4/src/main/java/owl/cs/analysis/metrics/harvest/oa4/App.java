@@ -15,7 +15,7 @@ public class App
     {
     	String url = args[0];
 		File ontology = new File(args[1]);
-		File export = new File(args[2],"metrics.harvest.oa4"+ontology.getName()+".rdf");
+		File export = new File(args[2],"metrics.harvest.oa4."+ontology.getName()+".rdf");
 		boolean overwrite = args.length > 3 ? args[3].equals("o") : false;
 		boolean run = export.exists() ? overwrite : true;
 		if (run) {

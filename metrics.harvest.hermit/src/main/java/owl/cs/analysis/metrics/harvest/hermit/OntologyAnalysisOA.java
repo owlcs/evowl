@@ -7,7 +7,6 @@ import java.util.Map;
 import org.semanticweb.HermiT.ReasonerFactory;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
@@ -38,18 +37,26 @@ public class OntologyAnalysisOA {
 		try {
 			OWLOntologyManager man = OWLManager.createOWLOntologyManager();
 			o = man.loadOntologyFromOntologyDocument(ontology);
-			r = rf.createReasoner(o);
 			try {
+				long prep = System.currentTimeMillis();
+				r = rf.createReasoner(o);
+				long start = System.currentTimeMillis();
 				boolean consistent = r.isConsistent();
+				long end = System.currentTimeMillis();
 				rec.put(MetricLabels.CONSISTENT, consistent + "");
+				rec.put(MetricLabels.CREATEREASONER_TIME, start-prep + "");
+				rec.put(MetricLabels.REASONING_CONSISTENCY_TIME, end-prep + "");
 			} catch (Exception e) {
-				rec.put(MetricLabels.REASONER_EXCEPTION, e.getMessage());
+				e.printStackTrace();
+				rec.put(MetricLabels.REASONER_EXCEPTION, e.getClass().getSimpleName());
+				rec.put(MetricLabels.REASONER_EXCEPTION_MESSAGE, e.getMessage());
 				rec.put(MetricLabels.CONSISTENT, "unknown");
 			}
 
-		} catch (OWLOntologyCreationException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-			rec.put(MetricLabels.OWLAPILOADEXCEPTION, e.getMessage());
+			rec.put(MetricLabels.OWLAPILOAD_EXCEPTION, e.getClass().getSimpleName());
+			rec.put(MetricLabels.OWLAPILOAD_EXCEPTION_MESSAGE, e.getMessage());
 			rec.put(MetricLabels.CONSISTENT, "unknown");
 		}
 		rec.put(MetricLabels.REASONER_JAR, ExperimentUtilities.getJARName(ReasonerFactory.class));

@@ -23,6 +23,9 @@ public class ReasonerUtilities {
 	
 
 	public static String getReasonerFullname(OWLReasoner r, String alt) {
+		if(r == null) {
+			return alt;
+		}
 		if (r.getReasonerName() == null) {
 			return alt;
 		}

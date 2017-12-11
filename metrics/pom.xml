@@ -23,6 +23,7 @@
 		<module>../metrics.harvest.oa4</module>
 		<module>../metrics.harvest.oa5</module>
 		<module>../metrics.harvest.url</module>
+		<module>../metrics.harvest.hermit</module>
 		<module>../metrics.server</module>
 		<module>../metrics.exampleclient</module>
 	</modules>
