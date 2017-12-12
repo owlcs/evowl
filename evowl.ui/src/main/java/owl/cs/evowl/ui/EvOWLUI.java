@@ -26,11 +26,9 @@ import owl.cs.evowl.ui.view.OntologyEvowluationView;
  * initialize non-component functionality.
  */
 @Theme("evowlTheme")
-public class evowl extends UI {
+public class EvOWLUI extends UI {
 	
-	/**
-	 * 
-	 */
+	Navigator navigator;
 	private static final long serialVersionUID = -6742698853306007200L;
 	VerticalLayout vl_main = new VerticalLayout();
 	final MetricsServer server = new MetricsServer(new WSConfig());
@@ -75,7 +73,7 @@ public class evowl extends UI {
 	}
 
 	@WebServlet(urlPatterns = "/*", name = "evowlServlet", asyncSupported = true)
-	@VaadinServletConfiguration(ui = evowl.class, productionMode = false)
+	@VaadinServletConfiguration(ui = EvOWLUI.class, productionMode = false)
 	public static class evowlServlet extends VaadinServlet {
 
 		private static final long serialVersionUID = 6596146514499261232L;

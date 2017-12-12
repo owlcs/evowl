@@ -679,13 +679,6 @@ public class StaticMetrics {
 		return length;
 	}
 
-	private int getDatatypesNotBuiltinCount(Imports included) {
-		return getNotBuiltInDatatypes(included).size();
-	}
-
-	private int getDatatypesBuiltinCount(Imports included) {
-		return getBuiltInDatatypes(included).size();
-	}
 
 	public String getSignatureWithoutIRIs(Imports incl) {
 		StringBuilder b = new StringBuilder();
@@ -713,10 +706,6 @@ public class StaticMetrics {
 		csvData.put(MetricLabels.CLASS_COUNT, getClassCount(Imports.EXCLUDED) + "");
 		csvData.put(MetricLabels.ANNOTATION_PROP_COUNT, getAnnotationPropertyCount() + "");
 		csvData.put(MetricLabels.ANNOTATIONS_COUNT, getAnnotationsCount() + "");
-		csvData.put(MetricLabels.DATATYPE_BUILTIN_COUNT_INCL, getDatatypesBuiltinCount(Imports.INCLUDED) + "");
-		csvData.put(MetricLabels.DATATYPE_BUILTIN_COUNT, getDatatypesBuiltinCount(Imports.EXCLUDED) + "");
-		csvData.put(MetricLabels.DATATYPE_NOTBUILTIN_COUNT_INCL, getDatatypesNotBuiltinCount(Imports.INCLUDED) + "");
-		csvData.put(MetricLabels.DATATYPE_NOTBUILTIN_COUNT, getDatatypesNotBuiltinCount(Imports.EXCLUDED) + "");
 		csvData.put(MetricLabels.INDIVIDUAL_COUNT_INCL, getIndividualsCount(Imports.INCLUDED) + "");
 		csvData.put(MetricLabels.INDIVIDUAL_COUNT, getIndividualsCount(Imports.EXCLUDED) + "");
 		csvData.put(MetricLabels.AXIOM_COMPLEXRHS_COUNT_INCL, getAxiomsWithComplexRHS(Imports.INCLUDED) + "");

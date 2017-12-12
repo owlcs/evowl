@@ -715,10 +715,6 @@ public class StaticMetrics {
 		csvData.put(MetricLabels.CLASS_COUNT, getClassCount(Imports.EXCLUDED) + "");
 		csvData.put(MetricLabels.ANNOTATION_PROP_COUNT, getAnnotationPropertyCount() + "");
 		csvData.put(MetricLabels.ANNOTATIONS_COUNT, getAnnotationsCount() + "");
-		csvData.put(MetricLabels.DATATYPE_BUILTIN_COUNT_INCL, getDatatypesBuiltinCount(Imports.INCLUDED) + "");
-		csvData.put(MetricLabels.DATATYPE_BUILTIN_COUNT, getDatatypesBuiltinCount(Imports.EXCLUDED) + "");
-		csvData.put(MetricLabels.DATATYPE_NOTBUILTIN_COUNT_INCL, getDatatypesNotBuiltinCount(Imports.INCLUDED) + "");
-		csvData.put(MetricLabels.DATATYPE_NOTBUILTIN_COUNT, getDatatypesNotBuiltinCount(Imports.EXCLUDED) + "");
 		csvData.put(MetricLabels.INDIVIDUAL_COUNT_INCL, getIndividualsCount(Imports.INCLUDED) + "");
 		csvData.put(MetricLabels.INDIVIDUAL_COUNT, getIndividualsCount(Imports.EXCLUDED) + "");
 		csvData.put(MetricLabels.AXIOM_COMPLEXRHS_COUNT_INCL, getAxiomsWithComplexRHS(Imports.INCLUDED) + "");
@@ -754,10 +750,10 @@ public class StaticMetrics {
 		csvData.put(MetricLabels.BOOL_PROFILE_OWL2_RL, isOWL2RLProfile() + "");
 		csvData.put(MetricLabels.BOOL_PROFILE_RDFS, isRDFS() + "");
 		csvData.putAll(StringUtilities.createPrefixedMap(getOwlprofileviolations(), "viol"));
-		csvData.putAll(StringUtilities.createPrefixedSet(getConstructs(true),"const_incl"));
-		csvData.putAll(StringUtilities.createPrefixedSet(getConstructs(false),"const"));
-		csvData.putAll(StringUtilities.createPrefixedMap(getAxiomTypeCounts(Imports.EXCLUDED),"axt"));
-		csvData.putAll(StringUtilities.createPrefixedMap(getAxiomTypeCounts(Imports.INCLUDED),"axt_incl"));
+		csvData.putAll(StringUtilities.createPrefixedSet(getConstructs(true), "const_incl"));
+		csvData.putAll(StringUtilities.createPrefixedSet(getConstructs(false), "const"));
+		csvData.putAll(StringUtilities.createPrefixedMap(getAxiomTypeCounts(Imports.EXCLUDED), "axt"));
+		csvData.putAll(StringUtilities.createPrefixedMap(getAxiomTypeCounts(Imports.INCLUDED), "axt_incl"));
 		csvData.put(MetricLabels.TBOX_CONTAINS_NOMINALS_INCL, isTBoxContainsNominals(Imports.INCLUDED) + "");
 		csvData.put(MetricLabels.TBOX_CONTAINS_NOMINALS, isTBoxContainsNominals(Imports.EXCLUDED) + "");
 		csvData.put(MetricLabels.ABOX_CONTAINS_NOMINALS_INCL, isABoxContainsNominals(Imports.INCLUDED) + "");

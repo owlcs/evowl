@@ -694,10 +694,6 @@ public class StaticMetrics {
 		csvData.put(MetricLabels.CLASS_COUNT, getClassCount(false) + "");
 		csvData.put(MetricLabels.ANNOTATION_PROP_COUNT, getAnnotationPropertyCount() + "");
 		csvData.put(MetricLabels.ANNOTATIONS_COUNT, getAnnotationsCount() + "");
-		csvData.put(MetricLabels.DATATYPE_BUILTIN_COUNT_INCL, getDatatypesBuiltinCount(true) + "");
-		csvData.put(MetricLabels.DATATYPE_BUILTIN_COUNT, getDatatypesBuiltinCount(false) + "");
-		csvData.put(MetricLabels.DATATYPE_NOTBUILTIN_COUNT_INCL, getDatatypesNotBuiltinCount(true) + "");
-		csvData.put(MetricLabels.DATATYPE_NOTBUILTIN_COUNT, getDatatypesNotBuiltinCount(false) + "");
 		csvData.put(MetricLabels.INDIVIDUAL_COUNT_INCL, getIndividualsCount(true) + "");
 		csvData.put(MetricLabels.INDIVIDUAL_COUNT, getIndividualsCount(false) + "");
 		csvData.put(MetricLabels.AXIOM_COMPLEXRHS_COUNT_INCL, getAxiomsWithComplexRHS(true) + "");

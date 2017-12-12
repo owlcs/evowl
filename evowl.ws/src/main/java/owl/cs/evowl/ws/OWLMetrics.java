@@ -57,6 +57,8 @@ public class OWLMetrics {
 
 			JSONArray meas = (JSONArray) jsonroot.get("measurements");
 
+			boolean url_assessed = false;
+
 			for (Iterator<Object> iterator = meas.iterator(); iterator.hasNext();) {
 
 				JSONObject measure = (JSONObject) iterator.next();
@@ -67,14 +69,23 @@ public class OWLMetrics {
 					String val = measure.get("value").toString();
 					String instrument = measure.get("instrument").toString();
 					System.out.println(val);
-					if (val.equals("true") && evowlMetric(metric, instrument)) {
-						data.add(new OWLBadgeImpl(metric, EvOWLMetrics.badges.get(metric)));
-						metrics.add(metric);
+					if (evowlMetric(metric, instrument)) {
+						if (val.equals("true")) {
+							data.add(new OWLBadgeImpl(metric, EvOWLMetrics.badges.get(metric)));
+							metrics.add(metric);
+						}
+						if (metric.equals(EvOWLMetrics.URL_HEALTHY)) {
+							url_assessed = true;
+						}
 					}
 				}
 			}
 
-			mainbadge = getMainBadge();
+			if (url_assessed) {
+				mainbadge = getMainBadge();
+			} else {
+				System.out.println("URL not evaluated yet, no judgement possible.");
+			}
 
 		} catch (Exception e) {
 
