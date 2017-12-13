@@ -7,7 +7,7 @@ public class KB {
 		return false;
 	}
 
-	public static OntologyAnalysis getAnalysis(String url) {
+	public static OWLAPIMetricsApp getAnalysis(String url) {
 		// TODO Auto-generated method stub
 		return null;
 	}

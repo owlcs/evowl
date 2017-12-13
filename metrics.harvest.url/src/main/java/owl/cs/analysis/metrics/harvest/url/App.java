@@ -1,35 +1,20 @@
 package owl.cs.analysis.metrics.harvest.url;
 
-import java.io.File;
-
-import owl.cs.analysis.metrics.utilities.oa5.ExperimentUtilities;
-import owl.cs.analysis.metrics.utilities.oa5.ExportRDF;
-import owl.cs.analysis.utilities.URLAnalysis;
+import owl.cs.analysis.utilities.MetricsServerAppRunner;
 
 /**
  * Hello world!
  *
  */
-public class App {
+public class App extends MetricsServerAppRunner {
+	
 	public static void main(String[] args) {
-		String url = args[0];
-		File download = new File(args[1]);
-		File export = new File(args[2], "metrics.harvest.url." + download.getName() + ".rdf");
+		run(args, new App());
+	}
 
-		boolean overwrite = args.length > 3 ? args[3].equals("o") : false;
-		boolean run = export.exists() && download.exists() ? overwrite : true;
-		if (run) {
-			System.out.println("Running: "+ExperimentUtilities.getJARName(App.class)+": "+url);
-			URLAnalysis oa = new URLAnalysis(url, download) {
-
-				public boolean exportRDFXML(File f) {
-					return ExportRDF.exportMeasurements(getSimpleRecord(), getURL(), f,
-							ExperimentUtilities.getJARName(this.getClass()));
-				}
-
-			};
-			oa.exportRDFXML(export);
-		}
-
+	@Override
+	protected owl.cs.analysis.utilities.App prepare(String[] args) {
+		prepareBasic(args, this.getClass().getName());
+		return new URLAnalysis(getURL(),getCSVFile(),getOntologyFile());
 	}
 }

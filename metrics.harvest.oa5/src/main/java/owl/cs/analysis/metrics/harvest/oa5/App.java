@@ -1,27 +1,23 @@
 package owl.cs.analysis.metrics.harvest.oa5;
 
-import java.io.File;
-
-import owl.cs.analysis.metrics.utilities.oa5.ExperimentUtilities;
-import owl.cs.analysis.utilities.OntologyAnalysis;
+import owl.cs.analysis.utilities.MetricsServerAppRunner;
+import owl.cs.analysis.utilities.OWLAPIMetricsApp;
 
 /**
  * Hello world!
  *
  */
-public class App 
+public class App extends MetricsServerAppRunner
 {
-    public static void main( String[] args )
-    {
-    	String url = args[0];
-		File ontology = new File(args[1]);
-		File export = new File(args[2],"metrics.harvest.oa5."+ontology.getName()+".rdf");
-		boolean overwrite = args.length > 3 ? args[3].equals("o") : false;
-		boolean run = export.exists() ? overwrite : true;
-		if (run) {
-			System.out.println("Running: "+ExperimentUtilities.getJARName(App.class)+": "+ontology.getName());
-			OntologyAnalysis oa = new OntologyAnalysisOA(ontology, url);
-			oa.exportRDFXML(export);
-		}
-    }
+	public static void main(String[] args) {
+		run(args, new App());
+	}
+
+	@Override
+	protected OWLAPIMetricsApp prepare(String[] args) {
+		prepareBasic(args, this.getClass().getName());
+		return new OntologyAnalysisOA(getOntologyFile(),getCSVFile(), getURL());
+	}
+	
+	
 }

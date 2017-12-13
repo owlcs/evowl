@@ -1,4 +1,4 @@
-package owl.cs.analysis.utilities;
+package owl.cs.analysis.metrics.harvest.url;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,21 +7,18 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 
-public abstract class URLAnalysis implements ExportToRDFXML {
+import owl.cs.analysis.metrics.utilities.oa5.ExportRDF;
+import owl.cs.analysis.utilities.App;
+import owl.cs.analysis.utilities.AppUtils;
+import owl.cs.analysis.utilities.MetricLabels;
 
-	final private String url;
-	final private File download;
-	final private Map<String, String> rec = new HashMap<String, String>();
+public class URLAnalysis extends App {
 
-	public URLAnalysis(String url, File download) {
-		this.url = url;
-		this.download = download;
-		analyse();
+	public URLAnalysis(String url, File out, File download) {
+		super(download, out, url);
 	}
 
 	protected void analyse() {
@@ -32,9 +29,9 @@ public abstract class URLAnalysis implements ExportToRDFXML {
 	private void download() {
 		URL url;
 		try {
-			url = new URL(getFinalURL(this.url));
+			url = new URL(getFinalURL(getURL()));
 			try {
-				FileUtils.copyURLToFile(url, download, 5000, 5000);
+				FileUtils.copyURLToFile(url, getOntologyFile(), 5000, 5000);
 				addResult(MetricLabels.URL_DOWNLOADABLE, true);
 			} catch (IOException e) {
 				addResult(MetricLabels.URL_DOWNLOADABLE, false);
@@ -47,14 +44,6 @@ public abstract class URLAnalysis implements ExportToRDFXML {
 			addResult(MetricLabels.URL_DOWNLOADABLE, false);
 			e.printStackTrace();
 		}
-	}
-
-	protected String getURL() {
-		return this.url;
-	}
-
-	protected void addResult(Object key, Object value) {
-		rec.put(key.toString(), value.toString());
 	}
 
 	private boolean linkHealth() {
@@ -87,10 +76,6 @@ public abstract class URLAnalysis implements ExportToRDFXML {
 		}
 		return false;
 	}
-
-	public Map<String, String> getSimpleRecord() {
-		return rec;
-	}
 	
 	private static String getFinalURL(String url) throws IOException {
 		URLConnection conu = new URL(url).openConnection();
@@ -107,5 +92,11 @@ public abstract class URLAnalysis implements ExportToRDFXML {
 			}
 		}
 		return url;
+	}
+
+	@Override
+	protected void exportResults() {
+		ExportRDF.exportMeasurements(getSimpleRecord(), getURL(), getOutfile(),
+				AppUtils.getJARName(FileUtils.class));
 	}
 }

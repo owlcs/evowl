@@ -134,7 +134,7 @@ public class EvOWLOntology {
 
 			}
 			man.saveOntology(o, new RDFXMLDocumentFormat(),
-					new FileOutputStream(new File("D:\\metric.pipeline\\evowl_ontology\\ev.owl")));
+					new FileOutputStream(new File("D:\\metric.pipeline\\ev.owl\\ev.owl")));
 		} catch (OWLOntologyCreationException e) {
 			e.printStackTrace();
 		} catch (OWLOntologyStorageException e) {

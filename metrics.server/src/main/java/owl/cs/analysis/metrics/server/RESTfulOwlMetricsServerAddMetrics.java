@@ -15,8 +15,8 @@ import owl.cs.analysis.metrics.db.KB;
 public class RESTfulOwlMetricsServerAddMetrics {
 	@POST
 	@Consumes(MediaType.TEXT_XML)
-	public Response crunchifyREST(@QueryParam("format") String format,InputStream data) {
-		KB.getInstance().rdfXMLInputStreamToSesame(data,format);
+	public Response crunchifyREST(@QueryParam("format") String format,@QueryParam("context") String context,InputStream data) {
+		KB.getInstance().rdfXMLInputStreamToSesame(data,format,context);
 		return Response.status(200).entity(data.toString()).build();
 	}
 

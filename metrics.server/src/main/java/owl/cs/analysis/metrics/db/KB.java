@@ -5,8 +5,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.model.ValueFactory;
@@ -17,11 +20,8 @@ import org.eclipse.rdf4j.query.QueryResults;
 import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.manager.RemoteRepositoryManager;
-import org.eclipse.rdf4j.repository.sail.SailRepository;
 import org.eclipse.rdf4j.repository.util.Repositories;
 import org.eclipse.rdf4j.rio.RDFFormat;
-import org.eclipse.rdf4j.sail.inferencer.fc.ForwardChainingRDFSInferencer;
-import org.eclipse.rdf4j.sail.memory.MemoryStore;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -54,22 +54,29 @@ public class KB {
 		return instance;
 	}
 
-	public void rdfXMLInputStreamToSesame(InputStream input, String format) {
+	public void rdfXMLInputStreamToSesame(InputStream input, String format, String con) {
+		long e1 = System.currentTimeMillis();
+		IRI context = db.getValueFactory().createIRI(con);
 		// Open a connection to the database
 		if (!isValidRDFXMLInputStream(input)) {
 			throw new IllegalArgumentException("Not a valid input stream");
 		}
 		try (RepositoryConnection conn = db.getConnection()) {
 			try {
-				// ByteArrayOutputStream os = new ByteArrayOutputStream();
-				// o.getOWLOntologyManager().saveOntology(o, os);
-				// ByteArrayInputStream input = new ByteArrayInputStream( os.toByteArray() );
+				long e2 = System.currentTimeMillis();
+				System.out.println(".. done ("+(e2-e1)+"). Clear context..");
+				conn.clear(context);
+				
 				RDFFormat f = RDFFormat.RDFXML;
-
+				
 				if (format.equals("ttl")) {
 					f = RDFFormat.TURTLE;
 				}
-				conn.add(input, "", f);
+				long e3 = System.currentTimeMillis();
+				System.out.println(".. done ("+(e3-e2)+"). Adding input..");
+				conn.add(input, "", f, context);
+				long e4 = System.currentTimeMillis();
+				System.out.println(".. done ("+(e4-e3)+")");
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -118,7 +125,7 @@ public class KB {
 		List<BindingSet> results = new ArrayList<>();
 		results.addAll(Repositories.tupleQuery(db, query, r -> QueryResults.asList(r)));
 
-		// System.out.println(results.size()+"################");
+		System.out.println(results.size()+"################");
 
 		for (BindingSet bs : results) {
 			JSONObject measure = new JSONObject();
@@ -148,10 +155,12 @@ public class KB {
 				+ "> . " + "}";
 		List<BindingSet> results = Repositories.tupleQuery(db, query, r -> QueryResults.asList(r));
 		// System.out.println(results.size()+"################");
+		Set<String> bss = new HashSet<>();
 		for (BindingSet bs : results) {
 			Value oid = bs.getValue("oid");
-			arr.add(oid.stringValue());
+			bss.add(oid.stringValue());
 		}
+		bss.forEach(e->arr.add(e));
 		obj.put("oids", arr);
 		return obj;
 	}
