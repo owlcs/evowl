@@ -1,8 +1,6 @@
 package owl.cs.analysis.metrics.harvest.hermit;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.semanticweb.HermiT.ReasonerFactory;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -11,65 +9,61 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 
-import owl.cs.analysis.metrics.utilities.oa5.ExperimentUtilities;
 import owl.cs.analysis.metrics.utilities.oa5.ExportRDF;
-import owl.cs.analysis.metrics.utilities.oa5.MissingImportTracker;
 import owl.cs.analysis.metrics.utilities.oa5.ReasonerUtilities;
+import owl.cs.analysis.utilities.App;
+import owl.cs.analysis.utilities.AppUtils;
 import owl.cs.analysis.utilities.MetricLabels;
 
-public class OntologyAnalysisOA {
+public class OntologyAnalysisOA extends App {
 
 	OWLOntology o = null;
 	OWLReasonerFactory rf = new ReasonerFactory();
-	MissingImportTracker missingImportTracker;
-	File ontology = null;
-	String url = null;
-	final private Map<String, String> rec = new HashMap<String, String>();
 
-	public OntologyAnalysisOA(File ontology, String url) {
-		this.ontology = ontology;
-		this.url = url;
-		runReasoner();
+	public OntologyAnalysisOA(File ontology, File out, String url) {
+		super(ontology, out, url);
 	}
 
 	protected void runReasoner() {
 		OWLReasoner r = null;
 		try {
 			OWLOntologyManager man = OWLManager.createOWLOntologyManager();
-			o = man.loadOntologyFromOntologyDocument(ontology);
+			o = man.loadOntologyFromOntologyDocument(getOntologyFile());
 			try {
 				long prep = System.currentTimeMillis();
 				r = rf.createReasoner(o);
 				long start = System.currentTimeMillis();
 				boolean consistent = r.isConsistent();
 				long end = System.currentTimeMillis();
-				rec.put(MetricLabels.CONSISTENT, consistent + "");
-				rec.put(MetricLabels.CREATEREASONER_TIME, start-prep + "");
-				rec.put(MetricLabels.REASONING_CONSISTENCY_TIME, end-prep + "");
+				addResult(MetricLabels.CONSISTENT, consistent + "");
+				addResult(MetricLabels.CREATEREASONER_TIME, start - prep + "");
+				addResult(MetricLabels.REASONING_CONSISTENCY_TIME, end - prep + "");
 			} catch (Exception e) {
 				e.printStackTrace();
-				rec.put(MetricLabels.REASONER_EXCEPTION, e.getClass().getSimpleName());
-				rec.put(MetricLabels.REASONER_EXCEPTION_MESSAGE, e.getMessage());
-				rec.put(MetricLabels.CONSISTENT, "unknown");
+				addResult(MetricLabels.REASONER_EXCEPTION, e.getClass().getSimpleName());
+				addResult(MetricLabels.REASONER_EXCEPTION_MESSAGE, e.getMessage());
+				addResult(MetricLabels.CONSISTENT, "unknown");
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			rec.put(MetricLabels.OWLAPILOAD_EXCEPTION, e.getClass().getSimpleName());
-			rec.put(MetricLabels.OWLAPILOAD_EXCEPTION_MESSAGE, e.getMessage());
-			rec.put(MetricLabels.CONSISTENT, "unknown");
+			addResult(MetricLabels.OWLAPILOAD_EXCEPTION, e.getClass().getSimpleName());
+			addResult(MetricLabels.OWLAPILOAD_EXCEPTION_MESSAGE, e.getMessage());
+			addResult(MetricLabels.CONSISTENT, "unknown");
 		}
-		rec.put(MetricLabels.REASONER_JAR, ExperimentUtilities.getJARName(ReasonerFactory.class));
-		rec.put(MetricLabels.REASONERNAME, ReasonerUtilities.getReasonerFullname(r, "hermit"));
+		addResult(MetricLabels.REASONER_JAR, AppUtils.getJARName(ReasonerFactory.class));
+		addResult(MetricLabels.REASONERNAME, ReasonerUtilities.getReasonerFullname(r, "hermit"));
 	}
 
-	public Map<String, String> getSimpleRecord() {
-		return rec;
+	@Override
+	protected void analyse() {
+		runReasoner();
 	}
 
-	public boolean exportRDFXML(File f) {
-		return ExportRDF.exportMeasurements(getSimpleRecord(), url, f,
-				ExperimentUtilities.getJARName(ReasonerFactory.class));
+	@Override
+	protected void exportResults() {
+		ExportRDF.exportMeasurements(getSimpleRecord(), getURL(), getOutfile(),
+				AppUtils.getJARName(ReasonerFactory.class));
 	}
 
 }

@@ -525,11 +525,6 @@ public class ExperimentUtilities {
 		return Collections.max(collection);
 	}
 
-	public static String getJARName(Class MyClass) {
-		return new File(MyClass.getProtectionDomain().getCodeSource()
-				.getLocation().getPath()).getName();
-	}
-
 	public static boolean ignoreFile(File ignorelist, String name) {
 		try {
 			Set<String> files = new HashSet<String>(

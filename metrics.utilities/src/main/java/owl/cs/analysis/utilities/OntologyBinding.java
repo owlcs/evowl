@@ -2,7 +2,7 @@ package owl.cs.analysis.utilities;
 
 public class OntologyBinding {
 
-	public static String ONTOLOGYIRI = "http://ontothenextone.net/mowl.owl";
+	public static String ONTOLOGYIRI = "http://ontothenextone.net/ev.owl";
 	public static String HASMEASUREMENT = "hasMeasurement";
 	public static String CL_MEASUREMENT = "Measurement";
 	public static String HASMEASUREMENTVALUE = "hasMeasurementValue";

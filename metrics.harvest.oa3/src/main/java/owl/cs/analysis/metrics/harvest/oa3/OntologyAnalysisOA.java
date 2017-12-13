@@ -11,21 +11,21 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
-import owl.cs.analysis.metrics.utilities.oa3.ExperimentUtilities;
 import owl.cs.analysis.metrics.utilities.oa3.ExportRDF;
 import owl.cs.analysis.metrics.utilities.oa3.MissingImportTracker;
 import owl.cs.analysis.metrics.utilities.oa3.StaticMetrics;
+import owl.cs.analysis.utilities.AppUtils;
 import owl.cs.analysis.utilities.MetricLabels;
-import owl.cs.analysis.utilities.OntologyAnalysis;
+import owl.cs.analysis.utilities.OWLAPIMetricsApp;
 import owl.cs.analysis.utilities.StringUtilities;
 
-public class OntologyAnalysisOA extends OntologyAnalysis {
+public class OntologyAnalysisOA extends OWLAPIMetricsApp {
 
 	OWLOntology o = null;
 	MissingImportTracker missingImportTracker;
 
-	public OntologyAnalysisOA(File ontology, String url) {
-		super(ontology, url);
+	public OntologyAnalysisOA(File ontology, File out, String url) {
+		super(ontology, out, url);
 	}
 
 	@Override
@@ -92,8 +92,9 @@ public class OntologyAnalysisOA extends OntologyAnalysis {
 				StringUtilities.createSpaceSeperatedStringFromSet(getValidImports(true)) + "");
 	}
 
-	public boolean exportRDFXML(File f) {
-		return ExportRDF.exportMeasurements(getSimpleRecord(), getURL(), f,ExperimentUtilities.getJARName(OWLOntology.class));
+	@Override
+	protected void exportResults() {
+		ExportRDF.exportMeasurements(getSimpleRecord(), getURL(), getOutfile(), AppUtils.getJARName(OWLOntology.class));
 	}
 
 }
