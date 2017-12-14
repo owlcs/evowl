@@ -6,5 +6,6 @@ public interface OWLBadge {
 
 	String getBadgeLocation();
 	String getMetric();
+	String getBadgeName();
 
 }

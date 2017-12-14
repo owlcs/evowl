@@ -26,8 +26,7 @@ public class OWLMetrics {
 	String url;
 	Set<String> metrics = new HashSet<>();
 	List<OWLBadge> data = new ArrayList<>();
-	OWLBadge mainbadge = new OWLBadgeImpl(EvOWLMetrics.MAIN_UNEVALUATED,
-			EvOWLMetrics.badges.get(EvOWLMetrics.MAIN_UNEVALUATED));
+	OWLBadge mainbadge = EvOWLMetrics.getBadge(EvOWLMetrics.MAIN_UNEVALUATED);
 	private String OAHARVEST = "metrics.harvest.oa3-0.0.1-jar-with-dependencies.jar";
 	private String REASONERHARVEST = "metrics.harvest.hermit-0.0.1-jar-with-dependencies.jar";
 
@@ -71,7 +70,7 @@ public class OWLMetrics {
 					System.out.println(val);
 					if (evowlMetric(metric, instrument)) {
 						if (val.equals("true")) {
-							data.add(new OWLBadgeImpl(metric, EvOWLMetrics.badges.get(metric)));
+							data.add(EvOWLMetrics.getBadge(metric));
 							metrics.add(metric);
 						}
 						if (metric.equals(EvOWLMetrics.URL_HEALTHY)) {

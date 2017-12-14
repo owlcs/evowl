@@ -12,6 +12,11 @@ import owl.cs.analysis.utilities.MetricLabels;
 import owl.cs.analysis.utilities.OntologyBinding;
 
 public class EvOWLMetrics {
+	
+	public final static String BADGEHOME = "https://github.com/owlcs/evowl/tree/master/evowl.ui/src/main/webapp/VAADIN/themes/evowlTheme/img/";
+	public final static String BADGEDEPLOYLOCATIONRAW = "https://raw.githubusercontent.com/owlcs/evowl/master/evowl.ui/src/main/webapp/VAADIN/themes/evowlTheme/img/";
+	public final static String BADGEDEPLOYLOCATIONLOCALHOST = "http://localhost:8080/evowl.ui-1.0.0/VAADIN/themes/evowlTheme/img/";
+	
 	public final static String NONEMPTY = OntologyBinding.entityIRI(MetricLabels.NONEMPTY);
 	public final static String OA3 = OntologyBinding.entityIRI(MetricLabels.OA3_PARSEABLE);
 	public final static String OA4 = OntologyBinding.entityIRI(MetricLabels.OA4_PARSEABLE);
@@ -35,25 +40,25 @@ public class EvOWLMetrics {
 	public static final Map<String, String> badges;
 	static {
 		Map<String, String> aMap = new HashMap<>();
-		aMap.put(EvOWLMetrics.MAIN_BROKEN, "https://purl.org/evowl/broken");
-		aMap.put(EvOWLMetrics.MAIN_GOLD, "https://purl.org/evowl/gold");
-		aMap.put(EvOWLMetrics.MAIN_SILVER, "https://purl.org/evowl/silver");
-		aMap.put(EvOWLMetrics.MAIN_BRONZE, "https://purl.org/evowl/bronze");
-		aMap.put(EvOWLMetrics.MAIN_UNEVALUATED, "https://purl.org/evowl/unevaluated");
-		aMap.put(EvOWLMetrics.MAIN_GREY, "https://purl.org/evowl/grey");
+		aMap.put(EvOWLMetrics.MAIN_BROKEN, "evowl_broken_small.svg");
+		aMap.put(EvOWLMetrics.MAIN_GOLD, "evowl_gold_small.svg");
+		aMap.put(EvOWLMetrics.MAIN_SILVER, "evowl_silver_small.svg");
+		aMap.put(EvOWLMetrics.MAIN_BRONZE, "evowl_bronze_small.svg");
+		aMap.put(EvOWLMetrics.MAIN_UNEVALUATED, "evowl_unevaluated_small.svg");
+		aMap.put(EvOWLMetrics.MAIN_GREY, "evowl_grey_small.svg");
 
-		aMap.put(EvOWLMetrics.URL_HEALTHY, "https://purl.org/evowl/urlhealthy");
-		aMap.put(EvOWLMetrics.NONEMPTY, "https://purl.org/evowl/nonempty");
-		aMap.put(EvOWLMetrics.OA3, "https://purl.org/evowl/owlapi/3");
-		aMap.put(EvOWLMetrics.OA4, "https://purl.org/evowl/owlapi/4");
-		aMap.put(EvOWLMetrics.OA5, "https://purl.org/evowl/owlapi/5");
-		aMap.put(EvOWLMetrics.OWL2, "https://purl.org/evowl/owl2");
-		aMap.put(EvOWLMetrics.OWL2DL, "https://purl.org/evowl/owl2/dl");
-		aMap.put(EvOWLMetrics.OWL2EL, "https://purl.org/evowl/owl2/el");
-		aMap.put(EvOWLMetrics.OWL2QL, "https://purl.org/evowl/owl2/ql");
-		aMap.put(EvOWLMetrics.OWL2RL, "https://purl.org/evowl/owl2/rl");
-		aMap.put(EvOWLMetrics.RDFS, "https://purl.org/evowl/rdfs");
-		aMap.put(EvOWLMetrics.CONSISTENT, "https://purl.org/evowl/consistent");
+		aMap.put(EvOWLMetrics.URL_HEALTHY, "evowl_urlhealthy_small.svg");
+		aMap.put(EvOWLMetrics.NONEMPTY, "evowl_nonempty_small.svg");
+		aMap.put(EvOWLMetrics.OA3, "evowl_oa3_small.svg");
+		aMap.put(EvOWLMetrics.OA4, "evowl_oa4_small.svg");
+		aMap.put(EvOWLMetrics.OA5, "evowl_oa5_small.svg");
+		aMap.put(EvOWLMetrics.OWL2, "evowl_owl2_small.svg");
+		aMap.put(EvOWLMetrics.OWL2DL, "evowl_owl2dl_small.svg");
+		aMap.put(EvOWLMetrics.OWL2EL, "evowl_owl2el_small.svg");
+		aMap.put(EvOWLMetrics.OWL2QL, "evowl_owl2ql_small.svg");
+		aMap.put(EvOWLMetrics.OWL2RL, "evowl_owl2rl_small.svg");
+		aMap.put(EvOWLMetrics.RDFS, "evowl_rdfs_small.svg");
+		aMap.put(EvOWLMetrics.CONSISTENT, "evowl_consistent_small.svg");
 
 		badges = Collections.unmodifiableMap(aMap);
 	}
@@ -90,10 +95,12 @@ public class EvOWLMetrics {
 
 	public static OWLBadge getBadge(String metric) {
 		String location = MAIN_UNEVALUATED;
+		String badgename = badges.get(MAIN_UNEVALUATED);
 		if (badges.containsKey(metric)) {
-			location = badges.get(metric);
+			location = BADGEDEPLOYLOCATIONRAW+badges.get(metric);
+			badgename = badges.get(metric);
 		}
-		return new OWLBadgeImpl(metric, location);
+		return new OWLBadgeImpl(metric, location,badgename);
 	}
 
 }

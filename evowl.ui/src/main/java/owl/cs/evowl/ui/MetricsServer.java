@@ -19,8 +19,8 @@ import com.sun.jersey.api.client.WebResource;
 
 import owl.cs.analysis.utilities.WSConfig;
 import owl.cs.analysis.utilities.WebServiceBindings;
+import owl.cs.evowl.util.EvOWLMetrics;
 import owl.cs.evowl.util.OWLBadge;
-import owl.cs.evowl.util.OWLBadgeImpl;
 import owl.cs.evowl.util.Ontology;
 import owl.cs.evowl.util.OntologyImpl;
 
@@ -109,9 +109,7 @@ public class MetricsServer {
 
 	private OWLBadge parseBadge(JSONObject jsonmain) {
 		String metric = jsonmain.get("metric").toString();
-		String badge = jsonmain.get("badge").toString();
-		OWLBadge b = new OWLBadgeImpl(metric, badge);
-		return b;
+		return EvOWLMetrics.getBadge(metric);
 	}
 
 	private JSONObject getJSONResponse(String q) throws IOException, ParseException {

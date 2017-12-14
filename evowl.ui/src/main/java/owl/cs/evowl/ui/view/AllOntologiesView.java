@@ -3,11 +3,14 @@ package owl.cs.evowl.ui.view;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vaadin.server.Resource;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.renderers.HtmlRenderer;
+import com.vaadin.ui.renderers.ImageRenderer;
 
 import owl.cs.evowl.ui.MetricsServer;
 import owl.cs.evowl.util.EvOWLMetrics;
@@ -33,7 +36,11 @@ public class AllOntologiesView extends VerticalLayout {
 		Grid<Ontology> grid = new Grid<>();
 		grid.setItems(ontologies);
 		grid.addColumn(Ontology::getDownloadURL).setCaption("URL");
-		grid.addColumn(p -> mainBadgeHTML(p), new HtmlRenderer()).setCaption("EvOWL").setWidth(200);
+		grid.addColumn(p -> mainBadgeHTML(p), new HtmlRenderer()).setCaption("EvOWL").setWidth(192);
+		// grid.addColumn(i -> new
+		// ThemeResource("img/"+i.getEvowlMainBadge().getBadgeName()), new
+		// ImageRenderer<>())
+		// .setCaption("EvOWL");
 		grid.addColumn(p -> allBadgeHTML(p), new HtmlRenderer()).setCaption("Breakdown").setWidth(600);
 		grid.setWidth("100%");
 
@@ -43,8 +50,11 @@ public class AllOntologiesView extends VerticalLayout {
 
 	private String mainBadgeHTML(Ontology o) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("<a href=\"www.google.de\"><img src=" + o.getEvowlMainBadge().getBadgeLocation() + " alt=\""
-				+ o.getEvowlMainBadge().getMetric() + "\" width=\"100px\" /></a>");
+		sb.append("<a href=\"" + EvOWLMetrics.BADGEHOME
+				+ "\"><img class=\"gwt-Image\" src=\"VAADIN/themes/evowlTheme/img/"
+				+ o.getEvowlMainBadge().getBadgeName() + "\" alt=\"" + o.getEvowlMainBadge().getBadgeName()
+				+ "\" height=\"30\" style=\"\" /></a>");
+
 		return sb.toString();
 	}
 
@@ -60,8 +70,9 @@ public class AllOntologiesView extends VerticalLayout {
 
 		StringBuilder sb = new StringBuilder();
 		for (OWLBadge b : badges) {
-			sb.append("<a href=\"www.google.de\"><img src=" + b.getBadgeLocation() + " alt=\"" + b.getMetric()
-					+ "\" height=\"30\" width=\"30\" /></a>");
+			sb.append("<a href=\"" + EvOWLMetrics.BADGEDEPLOYLOCATIONRAW
+					+ "\"><img class=\"gwt-Image\" src=\"VAADIN/themes/evowlTheme/img/" + b.getBadgeName() + "\" alt=\""
+					+ b.getBadgeName() + "\" height=\"30\" width=\"30\" style=\"\" /></a>");
 		}
 		return sb.toString();
 	}
