@@ -16,6 +16,6 @@ public class App extends MetricsServerAppRunner
 	@Override
 	protected OWLAPIMetricsApp prepare(String[] args) {
 		prepareBasic(args, this.getClass().getName());
-		return new OntologyAnalysisOA(getOntologyFile(),getCSVFile(), getURL());
+		return new OntologyAnalysisOA(getOntologyFile(),getCSVFile(), getURL(),getGroup());
 	}
 }

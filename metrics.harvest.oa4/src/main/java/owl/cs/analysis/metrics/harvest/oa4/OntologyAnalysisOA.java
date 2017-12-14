@@ -24,8 +24,8 @@ public class OntologyAnalysisOA extends OWLAPIMetricsApp {
 	OWLOntology o = null;
 	MissingImportTracker missingImportTracker;
 
-	public OntologyAnalysisOA(File ontology, File out, String url) {
-		super(ontology, out, url);
+	public OntologyAnalysisOA(File ontology, File out, String url, String group) {
+		super(ontology, out, url, group);
 	}
 
 	@Override
@@ -94,6 +94,6 @@ public class OntologyAnalysisOA extends OWLAPIMetricsApp {
 
 	@Override
 	protected void exportResults() {
-		ExportRDF.exportMeasurements(getSimpleRecord(), getURL(), getOutfile(), AppUtils.getJARName(OWLOntology.class));
+		ExportRDF.exportMeasurements(getSimpleRecord(), getURL(), getOutfile(), AppUtils.getJARName(OWLOntology.class),getGroup());
 	}
 }

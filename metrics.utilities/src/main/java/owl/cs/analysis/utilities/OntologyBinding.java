@@ -4,6 +4,7 @@ public class OntologyBinding {
 
 	public static String ONTOLOGYIRI = "http://ontothenextone.net/ev.owl";
 	public static String HASMEASUREMENT = "hasMeasurement";
+	public static String OP_HASGROUP = "hasGroup";
 	public static String CL_MEASUREMENT = "Measurement";
 	public static String HASMEASUREMENTVALUE = "hasMeasurementValue";
 	public static String HASMEASUREMENTINSTRUMENT = "hasMeasurementInstrument";
@@ -41,6 +42,10 @@ public class OntologyBinding {
 
 	public static String getMachineReadableIRI() {
 		return entityIRI(CL_MACHINEREADABLE);
+	}
+
+	public static String gethasGroupIRI() {
+		return entityIRI(OP_HASGROUP);
 	}
 	
 }

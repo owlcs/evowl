@@ -20,8 +20,8 @@ public class OntologyAnalysisOA extends App {
 	OWLOntology o = null;
 	OWLReasonerFactory rf = new ReasonerFactory();
 
-	public OntologyAnalysisOA(File ontology, File out, String url) {
-		super(ontology, out, url);
+	public OntologyAnalysisOA(File ontology, File out, String url,String group) {
+		super(ontology, out, url,group);
 	}
 
 	protected void runReasoner() {
@@ -63,7 +63,7 @@ public class OntologyAnalysisOA extends App {
 	@Override
 	protected void exportResults() {
 		ExportRDF.exportMeasurements(getSimpleRecord(), getURL(), getOutfile(),
-				AppUtils.getJARName(ReasonerFactory.class));
+				AppUtils.getJARName(ReasonerFactory.class),getGroup());
 	}
 
 }

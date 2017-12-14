@@ -13,6 +13,7 @@ public abstract class AppRunner {
 	boolean run = true;
 	boolean ontologyFileShouldExist = false;
 	boolean shouldRun = true;
+	String group = "default";
 
 	/**
 	 * @param args
@@ -86,6 +87,10 @@ public abstract class AppRunner {
 	public File getCSVFile() {
 		return outfile;
 	}
+	
+	public String getGroup() {
+		return group;
+	}
 
 	protected void setCSVFile(File csv) {
 		outfile = csv;
@@ -93,6 +98,10 @@ public abstract class AppRunner {
 
 	protected void setOntologyFile(File ontology) {
 		ontologyfile = ontology;
+	}
+	
+	protected void setGroup(String group) {
+		this.group = group;
 	}
 
 	protected void setShouldOntologyFileExistst(boolean ontologyFileShouldExist) {

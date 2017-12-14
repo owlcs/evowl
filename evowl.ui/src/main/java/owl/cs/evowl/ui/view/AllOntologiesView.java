@@ -3,14 +3,11 @@ package owl.cs.evowl.ui.view;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.vaadin.server.Resource;
-import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.renderers.HtmlRenderer;
-import com.vaadin.ui.renderers.ImageRenderer;
 
 import owl.cs.evowl.ui.MetricsServer;
 import owl.cs.evowl.util.EvOWLMetrics;

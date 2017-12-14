@@ -23,18 +23,23 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 
 import owl.cs.analysis.utilities.OntologyBinding;
+import owl.cs.analysis.utilities.StringUtilities;
 
 
 public class ExportRDF {
 
-	public static boolean exportMeasurements(Map<String,String> rec, String url, File f, String instrument) {
+	public static boolean exportMeasurements(Map<String,String> rec, String url, File f, String instrument, String group) {
 		OWLOntologyManager man = OWLManager.createOWLOntologyManager();
 		OWLDataFactory df = man.getOWLDataFactory();
 		try {
 			OWLOntology out = man.createOntology();
 			OWLNamedIndividual subject = df.getOWLNamedIndividual(IRI.create(url));
 			OWLObjectProperty hasMeasurement = df.getOWLObjectProperty(IRI.create(OntologyBinding.getHasMeasurementIRI()));
+			OWLObjectProperty hasGroup = df.getOWLObjectProperty(IRI.create(OntologyBinding.gethasGroupIRI()));
 			OWLClass deployloc = df.getOWLClass(IRI.create(OntologyBinding.getOntologyDeployLocationClass()));
+			String groupstripped = StringUtilities.stripNonAlphaNumeric(group);
+			groupstripped = groupstripped.isEmpty() ? "default" : groupstripped;
+			OWLNamedIndividual groupi = df.getOWLNamedIndividual(IRI.create(OntologyBinding.entityIRI(groupstripped)));
 			//OWLClass cl_measurement = df.getOWLClass(IRI.create(OntologyBinding.getMeasurementClass()));
 			OWLDataProperty hasMeasurementValue = df.getOWLDataProperty(IRI.create(OntologyBinding.getHasMeasurementValueIRI()));
 			OWLDataProperty hasMeasurementInstrument = df.getOWLDataProperty(IRI.create(OntologyBinding.getHasMeasurementInstrumentIRI()));
@@ -47,6 +52,7 @@ public class ExportRDF {
 				OWLClass metric = df.getOWLClass(IRI.create(OntologyBinding.entityIRI(key)));
 				OWLNamedIndividual measurement = df.getOWLNamedIndividual(IRI.create(OntologyBinding.entityIRI("Measurement"+UUID.randomUUID())));
 				man.addAxiom(out, df.getOWLObjectPropertyAssertionAxiom(hasMeasurement, subject, measurement));
+				man.addAxiom(out, df.getOWLObjectPropertyAssertionAxiom(hasGroup, subject, groupi));
 				man.addAxiom(out, df.getOWLClassAssertionAxiom(metric, measurement));
 				man.addAxiom(out, df.getOWLClassAssertionAxiom(deployloc, subject));
 				man.addAxiom(out, df.getOWLDataPropertyAssertionAxiom(hasMeasurementValue, measurement, val));

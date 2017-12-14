@@ -17,8 +17,8 @@ import owl.cs.analysis.utilities.MetricLabels;
 
 public class URLAnalysis extends App {
 
-	public URLAnalysis(String url, File out, File download) {
-		super(download, out, url);
+	public URLAnalysis(String url, File out, File download,String group) {
+		super(download, out, url,group);
 	}
 
 	protected void analyse() {
@@ -97,6 +97,6 @@ public class URLAnalysis extends App {
 	@Override
 	protected void exportResults() {
 		ExportRDF.exportMeasurements(getSimpleRecord(), getURL(), getOutfile(),
-				AppUtils.getJARName(FileUtils.class));
+				AppUtils.getJARName(FileUtils.class),getGroup());
 	}
 }

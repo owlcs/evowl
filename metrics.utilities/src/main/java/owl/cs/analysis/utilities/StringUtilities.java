@@ -20,6 +20,10 @@ public class StringUtilities {
 		}
 		return sb.toString();
 	}
+	
+	public static String stripNonAlphaNumeric(String s) {
+		return s.replaceAll("[^A-Za-z0-9]", "");
+	}
 
 	public static String formatHTML(String subject, Map<String, String> rec) {
 		StringBuilder sb = new StringBuilder();

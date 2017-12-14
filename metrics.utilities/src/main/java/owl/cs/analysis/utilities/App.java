@@ -13,14 +13,16 @@ import java.util.concurrent.Callable;
 public abstract class App implements Callable<String> {
 
 	final private String url;
+	final private String group;
 	final private File ontology;
 	final private File outfile;
 	final private Map<String, String> rec = new HashMap<String, String>();
 
-	public App(File ontology, File outfile, String url) {
+	public App(File ontology, File outfile, String url, String group) {
 		this.url = url;
 		this.ontology = ontology;
 		this.outfile = outfile;
+		this.group = group;
 	}
 
 	@Override
@@ -75,6 +77,10 @@ public abstract class App implements Callable<String> {
 
 	protected String getURL() {
 		return this.url;
+	}
+	
+	protected String getGroup() {
+		return this.group;
 	}
 
 	public Map<String, String> getSimpleRecord() {

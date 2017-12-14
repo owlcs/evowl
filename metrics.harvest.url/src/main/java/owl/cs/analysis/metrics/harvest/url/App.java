@@ -15,6 +15,6 @@ public class App extends MetricsServerAppRunner {
 	@Override
 	protected owl.cs.analysis.utilities.App prepare(String[] args) {
 		prepareBasic(args, this.getClass().getName());
-		return new URLAnalysis(getURL(),getCSVFile(),getOntologyFile());
+		return new URLAnalysis(getURL(),getCSVFile(),getOntologyFile(),getGroup());
 	}
 }

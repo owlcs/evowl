@@ -8,16 +8,17 @@ public abstract class MetricsServerAppRunner extends AppRunner {
 
 	protected void prepareBasic(String[] args, String appname) {
 
-		if (args.length != 5) {
+		if (args.length != 6) {
 			throw new IllegalArgumentException(
-					"You need exactly 5 parameters (Ontology IRI, Ontology directory, Output directory, overwrite condition, timeout in milliseconds");
+					"You need exactly 5 parameters (Ontology IRI, Ontology directory, Group, Output directory, overwrite condition, timeout in milliseconds");
 		}
 
 		String url = args[0];
 		File ontology = new File(args[1], AppUtils.getFilenameFromURL(url));
-		File export = new File(args[2], appname + "." + ontology.getName() + ".rdf");
-		boolean run = shouldRun(args[3], export);
-		int timeout = Integer.valueOf(args[4]);
+		String group = args[2];
+		File export = new File(args[3], appname + "." + ontology.getName() + ".rdf");
+		boolean run = shouldRun(args[4], export);
+		int timeout = Integer.valueOf(args[5]);
 
 		setURL(url);
 		setProcessTimeout(timeout);
@@ -25,6 +26,7 @@ public abstract class MetricsServerAppRunner extends AppRunner {
 		setOntologyFile(ontology);
 		setShouldOntologyFileExistst(!appname.contains("url"));
 		setShouldRun(run);
+		setGroup(group);
 
 	}
 

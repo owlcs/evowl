@@ -8,8 +8,8 @@ public abstract class OWLAPIMetricsApp extends App {
 	private boolean parseable = false;
 	private boolean nonempty = false;
 
-	public OWLAPIMetricsApp(File ontology, File out, String url) {
-		super(ontology,out,url);
+	public OWLAPIMetricsApp(File ontology, File out, String url, String group) {
+		super(ontology,out,url, group);
 	}
 
 	protected void analyse() {
