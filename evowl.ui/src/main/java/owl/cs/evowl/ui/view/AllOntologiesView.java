@@ -1,11 +1,15 @@
 package owl.cs.evowl.ui.view;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.shared.ui.ContentMode;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Layout;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.renderers.HtmlRenderer;
 
@@ -25,12 +29,27 @@ public class AllOntologiesView extends VerticalLayout {
 	 * 
 	 */
 
+	Layout vl_main = new VerticalLayout();
+	ComboBox<String> selectg = new ComboBox<>("Select Group");
+	final private MetricsServer server;
+
 	public AllOntologiesView(MetricsServer server) {
 		this.setWidth("100%");
-		List<Ontology> ontologies = server.getOntologies();
+		this.server = server;
 
-		// Create a grid bound to the list
+		
+		selectg.setItems(server.getGroups());
+		selectg.addValueChangeListener(v -> changeSelection(v));
+		addComponent(new Label("<h1>All Ontologies</h1>", ContentMode.HTML));
+		addComponent(selectg);
+		addComponent(vl_main);
+
+	}
+
+	private void changeSelection(ValueChangeEvent<String> v) {
+		List<Ontology> ontologies = server.getOntologyEvowl(selectg.getValue());
 		Grid<Ontology> grid = new Grid<>();
+
 		grid.setItems(ontologies);
 		grid.addColumn(Ontology::getDownloadURL).setCaption("URL");
 		grid.addColumn(p -> mainBadgeHTML(p), new HtmlRenderer()).setCaption("EvOWL").setWidth(192);
@@ -40,9 +59,7 @@ public class AllOntologiesView extends VerticalLayout {
 		// .setCaption("EvOWL");
 		grid.addColumn(p -> allBadgeHTML(p), new HtmlRenderer()).setCaption("Breakdown").setWidth(600);
 		grid.setWidth("100%");
-
-		addComponent(new Label("<h1>All Ontologies</h1>", ContentMode.HTML));
-		addComponent(grid);
+		vl_main.addComponent(grid);
 	}
 
 	private String mainBadgeHTML(Ontology o) {

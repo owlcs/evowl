@@ -22,7 +22,7 @@
 		<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
 		<init-param>
 			<param-name>com.sun.jersey.config.property.packages</param-name>
-			<param-value>owl.cs.evowl.ws</param-value>
+			<param-value>owl.cs.evowl.ws.server</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>

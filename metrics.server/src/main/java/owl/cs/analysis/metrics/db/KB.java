@@ -5,8 +5,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.rdf4j.model.IRI;
@@ -64,19 +66,19 @@ public class KB {
 		try (RepositoryConnection conn = db.getConnection()) {
 			try {
 				long e2 = System.currentTimeMillis();
-				System.out.println(".. done ("+(e2-e1)+"). Clear context..");
+				System.out.println(".. done (" + (e2 - e1) + "). Clear context..");
 				conn.clear(context);
-				
+
 				RDFFormat f = RDFFormat.RDFXML;
-				
+
 				if (format.equals("ttl")) {
 					f = RDFFormat.TURTLE;
 				}
 				long e3 = System.currentTimeMillis();
-				System.out.println(".. done ("+(e3-e2)+"). Adding input..");
+				System.out.println(".. done (" + (e3 - e2) + "). Adding input..");
 				conn.add(input, "", f, context);
 				long e4 = System.currentTimeMillis();
-				System.out.println(".. done ("+(e4-e3)+")");
+				System.out.println(".. done (" + (e4 - e3) + ")");
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -125,7 +127,7 @@ public class KB {
 		List<BindingSet> results = new ArrayList<>();
 		results.addAll(Repositories.tupleQuery(db, query, r -> QueryResults.asList(r)));
 
-		System.out.println(results.size()+"################");
+		System.out.println(results.size() + "################");
 
 		for (BindingSet bs : results) {
 			JSONObject measure = new JSONObject();
@@ -151,8 +153,8 @@ public class KB {
 		JSONObject obj = new JSONObject();
 		JSONArray arr = new JSONArray();
 
-		String query = "SELECT ?oid WHERE " + "{" + "?oid rdf:type <" + OntologyBinding.getOntologyDeployLocationClass()
-				+ "> . " + "}";
+		String query = "SELECT DISTINCT ?oid WHERE " + "{" + "?oid rdf:type <"
+				+ OntologyBinding.getOntologyDeployLocationClass() + "> . " + "}";
 		List<BindingSet> results = Repositories.tupleQuery(db, query, r -> QueryResults.asList(r));
 		// System.out.println(results.size()+"################");
 		Set<String> bss = new HashSet<>();
@@ -160,7 +162,7 @@ public class KB {
 			Value oid = bs.getValue("oid");
 			bss.add(oid.stringValue());
 		}
-		bss.forEach(e->arr.add(e));
+		bss.forEach(e -> arr.add(e));
 		obj.put("oids", arr);
 		return obj;
 	}
@@ -191,6 +193,96 @@ public class KB {
 		String s = stringValue.length() <= TRUNCATESTRING ? stringValue
 				: stringValue.substring(0, TRUNCATESTRING) + " [...]";
 		return JSONValue.escape(s);
+	}
+
+	public JSONObject getMetricsByGroup(String group) {
+
+		String filter = !validURI(group) ? OntologyBinding.entityIRI("default") : group;
+
+		JSONObject obj = new JSONObject();
+		
+		obj.put("group", filter);
+
+		String query = "SELECT ?measure ?metric ?value ?instrument ?date ?metric_label ?o " + "WHERE " + "{ " + "?o <"
+				+ OntologyBinding.gethasGroupIRI() + "> <" + filter + "> . " 
+				+ "?o <http://ontothenextone.net/ev.owl#hasMeasurement> ?measure . " 
+				+ "?measure rdf:type ?metric . "
+				+ "?metric rdfs:subClassOf <" + OntologyBinding.getMeasurementClass() + "> . " 
+				+ "?metric <" + OntologyBinding.getMachineReadableIRI() + "> ?metric_label . " 
+				+ "?measure <" + OntologyBinding.getHasMeasurementValueIRI() + "> ?value . " 
+				+ "?measure <" + OntologyBinding.getHasMeasurementInstrumentIRI() + "> ?instrument . " 
+				+ "?measure <"+ OntologyBinding.getHasRecordingDateIRI() + "> ?date . " 
+				//+ "FILTER (?metric != <"+ OntologyBinding.getMeasurementClass() + ">) " 
+				+ " }";
+		
+		
+
+		System.out.println(query);
+		
+		List<BindingSet> results = new ArrayList<>();
+		results.addAll(Repositories.tupleQuery(db, query, r -> QueryResults.asList(r)));
+
+		System.out.println(results.size() + "################");
+
+	
+
+		Map<String, JSONArray> measures_by_oid = new HashMap<>();
+
+		for (BindingSet bs : results) {
+			String oi = bs.getValue("o").stringValue();
+			if (!measures_by_oid.containsKey(oi)) {
+				measures_by_oid.put(oi, new JSONArray());
+			}
+			JSONArray measures = measures_by_oid.get(oi);
+			JSONObject measure = new JSONObject();
+
+			Value measurei = bs.getValue("measure");
+			Value metrici = bs.getValue("metric");
+			Value valuei = bs.getValue("value");
+			Value instrumenti = bs.getValue("instrument");
+			Value metric_labeli = bs.getValue("metric_label");
+			Value datei = bs.getValue("date");
+			measure.put("measureid", measurei.stringValue());
+			measure.put("metric", metrici.stringValue());
+			measure.put("value", jsonpreprocess(valuei.stringValue()));
+			measure.put("instrument", instrumenti.stringValue());
+			measure.put("recordingdate", datei.stringValue());
+			measure.put("metric_label", metric_labeli.stringValue());
+			measures.add(measure);
+		}
+		JSONArray ontsjson = new JSONArray();
+		for (String oid : measures_by_oid.keySet()) {
+			JSONObject ontobj = new JSONObject();
+			ontobj.put("oid", oid);
+			ontobj.put("measurements", measures_by_oid.get(oid));
+			ontsjson.add(ontobj);
+		}
+		obj.put("ontologies", ontsjson);
+
+		return obj;
+	}
+
+	private boolean validURI(String group) {
+		System.err.println("KB.validURI() not implemented..");
+		return true;
+	}
+
+	public JSONObject getGroups() {
+		JSONObject obj = new JSONObject();
+		JSONArray arr = new JSONArray();
+
+		String query = "SELECT DISTINCT ?group WHERE " + "{" + "?oid <" + OntologyBinding.gethasGroupIRI()
+				+ "> ?group . " + "}";
+		List<BindingSet> results = Repositories.tupleQuery(db, query, r -> QueryResults.asList(r));
+		// System.out.println(results.size()+"################");
+		Set<String> bss = new HashSet<>();
+		for (BindingSet bs : results) {
+			Value oid = bs.getValue("group");
+			bss.add(oid.stringValue());
+		}
+		bss.forEach(e -> arr.add(e));
+		obj.put("groups", arr);
+		return obj;
 	}
 
 }

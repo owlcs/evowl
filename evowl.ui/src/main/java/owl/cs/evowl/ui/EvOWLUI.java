@@ -48,11 +48,13 @@ public class EvOWLUI extends UI {
 		barmenu.addItem("All Ontologies", null,  e -> update(State.ALLONTOLOGIES));
 		barmenu.addItem("Ontology Evowluation", null,  e -> update(State.EVOWLUATION));
 		
+
 		layout.addComponent(barmenu);
 		layout.addComponent(selection);
 		layout.addComponent(vl_main);
 		
 		setContent(layout);
+		update(State.ALLONTOLOGIES);
 	}
 
 	private void update(State state) {

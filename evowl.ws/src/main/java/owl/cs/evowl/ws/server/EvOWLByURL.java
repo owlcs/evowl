@@ -1,4 +1,4 @@
-package owl.cs.evowl.ws;
+package owl.cs.evowl.ws.server;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -7,16 +7,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import owl.cs.analysis.utilities.WSConfig;
+import owl.cs.evowl.ws.db.OWLMetrics;
 
 
-@Path("/evowl")
-
-public class EvOWLWS {
-
-	public static void main(String[] args) {
-		System.out.println(new EvOWLWS().getMetrics("http://purl.obolibrary.org/obo/bco.owl"));
-	}
-
+@Path("/evowl/url")
+public class EvOWLByURL {
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
 	public String plainTextOA3(@QueryParam("url") String url) {
@@ -24,8 +19,8 @@ public class EvOWLWS {
 	}
 
 	private String getMetrics(String url) {
-		OWLMetrics m = new OWLMetrics(new WSConfig(),url);
-		return m.toJSONString().toString().replaceAll("\\\\", "");
+		OWLMetrics m = new OWLMetrics(new WSConfig());
+		return m.getOWLMetricsByOid(url).toString().replaceAll("\\\\", "");
 	}
 
 	@GET

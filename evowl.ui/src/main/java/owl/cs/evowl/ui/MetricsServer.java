@@ -3,6 +3,7 @@ package owl.cs.evowl.ui;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -60,7 +61,7 @@ public class MetricsServer {
 		Ontology o = new OntologyImpl(url);
 		try {
 
-			String q = conf.getBaseAdress(WebServiceBindings.GETMEASUREMENTS) + "?url=" + url;
+			String q = conf.getBaseAdress(WebServiceBindings.GETMEASUREMENTS) + "?url=" + url.replace("#", "%23");
 			System.out.println(q);
 
 			JSONObject jsonroot = getJSONResponse(q);
@@ -79,32 +80,46 @@ public class MetricsServer {
 		return o;
 	}
 
-	public Ontology getOntologyEvowl(String url) {
-		Ontology o = new OntologyImpl(url);
+	public List<Ontology> getOntologyEvowl(String group) {
+		List<Ontology> os = new ArrayList<>();
+
 		try {
 
-			String q = conf.getBaseAdress(WebServiceBindings.EVOWL) + "?url=" + url;
+			String q = conf.getBaseAdress(WebServiceBindings.EVOWLBYGROUP) + "?group=" + group.replace("#", "%23");
 			System.out.println(q);
 
 			JSONObject jsonroot = getJSONResponse(q);
-			if (jsonroot.containsKey("mainbadge")) {
-				//TODO make sure it does
-				JSONObject jsonmain = (JSONObject) jsonroot.get("mainbadge");
-				OWLBadge b = parseBadge(jsonmain);
-				o.setMainBadge(b);
-			}
 
-			JSONArray meas = (JSONArray) jsonroot.get("badges");
+			JSONArray onts = (JSONArray) jsonroot.get("ontologies");
 
-			for (Iterator iterator = meas.iterator(); iterator.hasNext();) {
-				JSONObject badgeo = (JSONObject) iterator.next();
-				o.addBadge(parseBadge(badgeo));
+			Iterator ontit = onts.iterator();
+			while (ontit.hasNext()) {
+				JSONObject ont = (JSONObject) ontit.next();
+
+				String oid = ont.get("oid").toString();
+
+				Ontology o = new OntologyImpl(oid);
+
+				if (ont.containsKey("mainbadge")) {
+					// TODO make sure it does
+					JSONObject jsonmain = (JSONObject) ont.get("mainbadge");
+					OWLBadge b = parseBadge(jsonmain);
+					o.setMainBadge(b);
+				}
+
+				JSONArray meas = (JSONArray) ont.get("badges");
+
+				for (Iterator iterator = meas.iterator(); iterator.hasNext();) {
+					JSONObject badgeo = (JSONObject) iterator.next();
+					o.addBadge(parseBadge(badgeo));
+				}
+				os.add(o);
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return o;
+		return os;
 	}
 
 	private OWLBadge parseBadge(JSONObject jsonmain) {
@@ -126,13 +141,27 @@ public class MetricsServer {
 		return jsonroot;
 	}
 
-	public List<Ontology> getOntologies() {
-		List<Ontology> ontologies = new ArrayList<>();
-		Set<String> oids = getOIDs();
-		for (String oid : oids) {
-			ontologies.add(getOntologyEvowl(oid));
+	public Collection<String> getGroups() {
+		Set<String> oids = new HashSet<>();
+		try {
+
+			String q = conf.getBaseAdress(WebServiceBindings.GETGROUPS);
+			System.out.println(q);
+
+			JSONObject jsonroot = getJSONResponse(q);
+			JSONArray meas = (JSONArray) jsonroot.get("groups");
+
+			for (@SuppressWarnings("unchecked")
+			Iterator<String> iterator = meas.iterator(); iterator.hasNext();) {
+				String oid = iterator.next();
+				System.out.println(oid);
+				oids.add(oid);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		return ontologies;
+		return oids;
 	}
 
 }

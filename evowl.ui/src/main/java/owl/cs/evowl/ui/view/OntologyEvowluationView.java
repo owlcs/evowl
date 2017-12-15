@@ -18,6 +18,8 @@ public class OntologyEvowluationView extends VerticalLayout {
 		// Have some data
 		ComboBox<String> select = new ComboBox<>("Select Ontology");
 		select.setItems(server.getOIDs());
+		
+		
 
 		addComponent(new Label("<h1>Ontology EvOWLuation</h1>",ContentMode.HTML));
 		addComponent(select);
