@@ -1,5 +1,6 @@
 # EvOWL badges
 
+## Primary Badges
 
 Badge | Definition | Rationale
 ------------ | ------------- | -------------
@@ -8,6 +9,10 @@ Badge | Definition | Rationale
 ![Bronze](evowl_bronze_small.svg) | The ontology is valid OWL 2 and non-empty, but **not valid OWL 2 DL** (i.e. is not in the DL profile) | NA
 ![Silver](evowl_silver_small.svg) | The ontology is not non-empty, valid OWL 2 DL, but is **inconsistent according to HermiT**. | NA
 ![Gold](evowl_gold_small.svg) | The ontology is not non-empty, valid OWL 2 DL, and **consistent**. | NA
+
+## Secondary Badges
+
+Badge | Definition | Rationale
 ------------ | ------------- | -------------
 ![URL Healthy](evowl_urlhealthy_small.svg) | The ontology url points to a location on the web that is accessible and contains a downloadable file. | NA
 ![OA3](evowl_oa3_small.svg) | The ontology is parseable by the OWL API 3. | NA
