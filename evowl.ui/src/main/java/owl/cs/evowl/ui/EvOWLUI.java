@@ -41,7 +41,7 @@ public class EvOWLUI extends UI {
 	
 	@Override
 	protected void init(VaadinRequest vaadinRequest) {
-		getPage().setTitle("Navigation Example");
+		getPage().setTitle("OWL Ontology Evaluation Center (EvOWL)");
 		navigator = new Navigator(this, this);
 		final MetricsServer server = new MetricsServer(new WSConfig("http://130.88.193.79", "8080"));
 		navigator.addView(State.ADDURL.getName(), new AddURLView(server, navigator));

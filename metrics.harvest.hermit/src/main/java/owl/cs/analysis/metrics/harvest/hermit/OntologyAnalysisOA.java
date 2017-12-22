@@ -8,6 +8,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
+import org.semanticweb.owlapi.reasoner.SimpleConfiguration;
 
 import owl.cs.analysis.metrics.utilities.oa5.ExportRDF;
 import owl.cs.analysis.metrics.utilities.oa5.ReasonerUtilities;
@@ -19,8 +20,9 @@ public class OntologyAnalysisOA extends App {
 
 	OWLOntology o = null;
 	OWLReasonerFactory rf = new ReasonerFactory();
+	long timeout = 7200000;
 
-	public OntologyAnalysisOA(File ontology, File out, String url,String group) {
+	public OntologyAnalysisOA(File ontology, File out, String url,String group,long timeout) {
 		super(ontology, out, url,group);
 	}
 
@@ -31,7 +33,7 @@ public class OntologyAnalysisOA extends App {
 			o = man.loadOntologyFromOntologyDocument(getOntologyFile());
 			try {
 				long prep = System.currentTimeMillis();
-				r = rf.createReasoner(o);
+				r = rf.createReasoner(o,new SimpleConfiguration(timeout));
 				long start = System.currentTimeMillis();
 				boolean consistent = r.isConsistent();
 				long end = System.currentTimeMillis();

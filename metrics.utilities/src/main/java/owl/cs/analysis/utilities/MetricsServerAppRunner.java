@@ -21,7 +21,7 @@ public abstract class MetricsServerAppRunner extends AppRunner {
 		int timeout = Integer.valueOf(args[5]);
 
 		setURL(url);
-		setProcessTimeout(timeout);
+		setProcessTimeout(timeout+300000);
 		setCSVFile(export);
 		setOntologyFile(ontology);
 		setShouldOntologyFileExistst(!appname.contains("url"));

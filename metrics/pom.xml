@@ -24,6 +24,8 @@
 		<module>../metrics.harvest.oa5</module>
 		<module>../metrics.harvest.url</module>
 		<module>../metrics.harvest.hermit</module>
+		<module>../metrics.harvest.meta.obo</module>
+		<module>../metrics.harvest.meta.bioportal</module>
 		<module>../metrics.server</module>
 		<module>../metrics.exampleclient</module>
 	</modules>
