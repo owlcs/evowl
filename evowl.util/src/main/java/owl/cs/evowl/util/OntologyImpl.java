@@ -11,7 +11,7 @@ public class OntologyImpl implements Ontology {
 	private final String url;
 	OWLBadge mainbadge = EvOWLMetrics.getBadge(EvOWLMetrics.MAIN_UNEVALUATED);
 	private Set<OWLBadge> badges = new HashSet<>();
-	private Map<String, String> metrics = new HashMap<>();
+	private Set<Metric> metrics = new HashSet<>();
 	private boolean urlhealthy = false;
 
 	public OntologyImpl(String url) {
@@ -38,11 +38,11 @@ public class OntologyImpl implements Ontology {
 	}
 
 	@Override
-	public void setMetric(String metric, String value) {
-		if (metric.equals(EvOWLMetrics.URL_HEALTHY)) {
-			urlhealthy = value.equals("true");
+	public void setMetric(Metric metric) {
+		if (metric.getID().equals(EvOWLMetrics.URL_HEALTHY)) {
+			urlhealthy = metric.getValue().equals("true");
 		}
-
+		metrics.add(metric);
 	}
 
 	@Override
@@ -58,6 +58,11 @@ public class OntologyImpl implements Ontology {
 	@Override
 	public Collection<OWLBadge> getBadges() {
 		return badges;
+	}
+
+	@Override
+	public Collection<Metric> getMetrics() {
+		return metrics;
 	}
 
 }

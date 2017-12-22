@@ -7,8 +7,9 @@ public interface Ontology {
 	public String getMainBadgeLocation();
 	public OWLBadge getEvowlMainBadge();
 	public void addBadge(OWLBadge b);
-	public void setMetric(String metric, String value);
+	public void setMetric(Metric metric);
 	public void setMainBadge(OWLBadge b);
 	public Collection<OWLBadge> getBadges();
+	public Collection<Metric> getMetrics();
 
 }

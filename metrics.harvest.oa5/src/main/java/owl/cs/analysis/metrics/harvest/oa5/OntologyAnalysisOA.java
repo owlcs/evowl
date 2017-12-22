@@ -42,13 +42,20 @@ public class OntologyAnalysisOA extends OWLAPIMetricsApp {
 			missingImportTracker = new MissingImportTracker();
 			OWLOntologyManager man = OWLManager.createOWLOntologyManager();
 			man.addMissingImportListener(missingImportTracker);
+			long start = System.currentTimeMillis();
 			o = man.loadOntologyFromOntologyDocument(getOntologyFile());
+			long end = System.currentTimeMillis();
 			addResult(MetricLabels.OA5_PARSEABLE, true);
+			addResult(MetricLabels.ONTOLOGYLOAD_TIME, end-start+"");
 			return true;
-		} catch (OWLOntologyCreationException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			addResult(MetricLabels.OA5_PARSEABLE, false);
 			addResult(MetricLabels.OA5_LOAD_EXCEPTION_MESSAGE, e.getMessage());
+			addResult(MetricLabels.OWLAPILOAD_EXCEPTION, e.getClass());
+			if (e.getCause() != null) {
+				addResult(MetricLabels.OWLAPILOAD_EXCEPTION_SOURCE, e.getCause().getClass());
+			}
 		}
 		return false;
 	}

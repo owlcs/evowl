@@ -14779,3 +14779,11 @@ div.v-layout.v-horizontal.v-widget {
 	width: 19px;
 	overflow: hidden;
 }
+
+.evowlTheme .v-grid-cell.bggrey {
+	background-color: #7e928e;
+}
+
+.evowlTheme .v-grid-allont .v-scroller {
+	overflow: hidden;
+}

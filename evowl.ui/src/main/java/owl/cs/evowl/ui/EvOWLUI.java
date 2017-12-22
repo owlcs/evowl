@@ -5,15 +5,22 @@ import javax.servlet.annotation.WebServlet;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.navigator.Navigator;
+import com.vaadin.navigator.View;
+import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 import owl.cs.analysis.utilities.WSConfig;
 import owl.cs.evowl.ui.view.AddURLView;
+import owl.cs.evowl.ui.view.AllGroupsView;
 import owl.cs.evowl.ui.view.AllOntologiesView;
 import owl.cs.evowl.ui.view.OntologyEvowluationView;
 
@@ -28,51 +35,21 @@ import owl.cs.evowl.ui.view.OntologyEvowluationView;
  */
 @Theme("evowlTheme")
 public class EvOWLUI extends UI {
-	
+
 	Navigator navigator;
 	private static final long serialVersionUID = -6742698853306007200L;
-	VerticalLayout vl_main = new VerticalLayout();
-	final MetricsServer server = new MetricsServer(new WSConfig());
-	VerticalLayout vl_addurl = new AddURLView(server);
-	VerticalLayout vl_allontologies = new AllOntologiesView(server);
-	VerticalLayout vl_evowl = new OntologyEvowluationView(server);
-
+	
 	@Override
 	protected void init(VaadinRequest vaadinRequest) {
-		final VerticalLayout layout = new VerticalLayout();
-		
-		MenuBar barmenu = new MenuBar();
-		
-		final Label selection = new Label("-");
-		barmenu.addItem("Add URL", null, e -> update(State.ADDURL));
-		barmenu.addItem("All Ontologies", null,  e -> update(State.ALLONTOLOGIES));
-		barmenu.addItem("Ontology Evowluation", null,  e -> update(State.EVOWLUATION));
-		
-
-		layout.addComponent(barmenu);
-		layout.addComponent(selection);
-		layout.addComponent(vl_main);
-		
-		setContent(layout);
-		update(State.ALLONTOLOGIES);
-	}
-
-	private void update(State state) {
-		vl_main.removeAllComponents();
-		switch(state) {
-		case ADDURL:
-			vl_main.addComponent(vl_addurl);
-			break;
-		case ALLONTOLOGIES:
-			vl_main.addComponent(vl_allontologies);
-			break;
-		case EVOWLUATION:
-			vl_main.addComponent(vl_evowl);
-			break;
-		default:
-			break;
-		
-		}
+		getPage().setTitle("Navigation Example");
+		navigator = new Navigator(this, this);
+		final MetricsServer server = new MetricsServer(new WSConfig("http://130.88.193.79", "8080"));
+		navigator.addView(State.ADDURL.getName(), new AddURLView(server, navigator));
+		navigator.addView("",new StartView());
+		navigator.addView(State.GROUPS.getName(), new AllGroupsView(server, navigator));
+		navigator.addView(State.ALLONTOLOGIES.getName(), new AllOntologiesView(server, navigator));
+		navigator.addView(State.EVOWLUATION.getName(), new OntologyEvowluationView(server, navigator));
+		navigator.navigateTo(State.GROUPS.getName());
 	}
 
 	@WebServlet(urlPatterns = "/*", name = "evowlServlet", asyncSupported = true)
@@ -80,5 +57,25 @@ public class EvOWLUI extends UI {
 	public static class evowlServlet extends VaadinServlet {
 
 		private static final long serialVersionUID = 6596146514499261232L;
+	}
+	
+	public class StartView extends VerticalLayout implements View {
+	    public StartView() {
+	        setSizeFull();
+
+	        Button button = new Button("Go to Main View",
+	                new Button.ClickListener() {
+	            @Override
+	            public void buttonClick(ClickEvent event) {
+	                navigator.navigateTo(State.GROUPS.getName());
+	            }
+	        });
+	        addComponent(button);
+	        setComponentAlignment(button, Alignment.MIDDLE_CENTER);
+	    }
+
+	    @Override
+	    public void enter(ViewChangeEvent event) {
+	    }
 	}
 }

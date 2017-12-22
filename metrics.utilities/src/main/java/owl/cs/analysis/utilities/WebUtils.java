@@ -1,9 +1,6 @@
 package owl.cs.analysis.utilities;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 
 public class WebUtils {
@@ -18,4 +15,9 @@ public class WebUtils {
 		return false;
 	}
 
+	public static String encodeURL(String s) {
+		// TODO encode properly (URLEncoder.encode(q, "UTF-8"))
+		return s.replace("#", "%23");
+	}
+	
 }

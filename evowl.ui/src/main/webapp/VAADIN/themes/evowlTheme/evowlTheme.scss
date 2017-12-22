@@ -34,5 +34,11 @@
 @mixin evowlTheme {
   @include valo;
 
-  // Insert your own theme rules here
+  .v-grid-cell.bggrey {
+  background-color: #7e928e;
+  }
+  
+  .v-grid-allont .v-scroller {
+    overflow: hidden;
+}
 }

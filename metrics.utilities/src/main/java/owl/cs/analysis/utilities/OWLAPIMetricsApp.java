@@ -18,7 +18,12 @@ public abstract class OWLAPIMetricsApp extends App {
 			nonempty = isNonEmpty();
 		}
 		if(nonempty) {
+			try {
 			gatherMetrics();
+			} catch (Exception e) {
+				e.printStackTrace();
+				addResult(MetricLabels.METRICS_EXCEPTION, e.getClass()+"");
+			}
 		}
 		addResult(MetricLabels.NONEMPTY, nonempty);
 	}

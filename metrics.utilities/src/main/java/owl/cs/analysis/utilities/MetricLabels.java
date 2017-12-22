@@ -111,6 +111,7 @@ public class MetricLabels {
 	public final static String DATATYPE_AXIOMCOUNT = "datatypes_axiomcount";
 	public final static String DATATYPE_AXIOMCOUNT_INCL = "datatypes_axiomcount_incl";
 	public final static String OWLAPILOAD_EXCEPTION = "owlapiloadexception";
+	public final static String OWLAPILOAD_EXCEPTION_SOURCE = "owlapiloadexception_source";
 	public final static String OWLAPILOAD_EXCEPTION_MESSAGE = "owlapiloadexception";
 	public final static String UNSUCCESSFULREASONINGEXCEPTION = "reasoner_exception";
 	public final static String COHERENT = "coherent";
@@ -241,6 +242,7 @@ public class MetricLabels {
 	public static final String EVOWLMAIN_GOLD = "evowl_main_badge_gold";
 	public static final String REASONER_EXCEPTION = "reasoner_exception";
 	public static final String REASONER_EXCEPTION_MESSAGE = "reasoner_exception_message";
+	public static final String METRICS_EXCEPTION = "metrics_gathering_exception";
 
 	
 	public static String createSpaceSeperatedStringFromSet(Set<String> set) {
